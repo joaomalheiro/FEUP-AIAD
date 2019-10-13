@@ -1,22 +1,32 @@
 import jade.core.*;
-import jade.core.behaviours.Behaviour;
+import jade.lang.acl.ACLMessage;
+import jade.core.behaviours.CyclicBehaviour;
 
 public class ControlTower extends Agent{
-    public void setup() {
-        System.out.println("Hello world!");
-    }
+
     public void takeDown() {
         System.out.println(getLocalName() + ": done working.");
     }
 
-    public class OverbearingBehaviour extends Behaviour {
+    public void setup() {
+        System.out.println("New control tower");
+        addBehaviour(new ListeningBehaviour());
+    }
+    class ListeningBehaviour extends CyclicBehaviour {
+
         public void action() {
-            while (true) {
-                // do something
+            ACLMessage msg = receive();
+            if(msg != null) {
+                System.out.println(msg);
+                System.out.println("Received msg");
+                ACLMessage reply = msg.createReply();
+                reply.setPerformative(ACLMessage.INFORM);
+                reply.setContent("Got your message!");
+                send(reply);
+            } else {
+                block();
             }
         }
-        public boolean done() {
-            return true;
-        }
     }
+
 }
