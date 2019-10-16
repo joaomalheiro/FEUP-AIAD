@@ -1,8 +1,11 @@
+package Agents;
+
 import jade.core.*;
 import jade.lang.acl.ACLMessage;
 import jade.core.behaviours.CyclicBehaviour;
 
 public class ControlTower extends Agent{
+    private Airplane[] airplanes;
 
     public void takeDown() {
         System.out.println(getLocalName() + ": done working.");
@@ -23,6 +26,7 @@ public class ControlTower extends Agent{
                 reply.setPerformative(ACLMessage.INFORM);
                 reply.setContent("Got your message!");
                 send(reply);
+                System.out.println(msg.getSender());
             } else {
                 block();
             }
