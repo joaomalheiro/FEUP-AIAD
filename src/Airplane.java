@@ -20,17 +20,22 @@ public class Airplane extends Agent {
 
         Object[] args = getArguments();
         if (args != null && args.length > 0) {
-            //id = (int) args[0];
-            //fuel = (float) args[1];
-            //capacity = (int) args[2];
-           // passengers = (int) args[3];
+            id = Integer.parseInt(args[0].toString());
+            fuel = Float.parseFloat(args[1].toString());
+            capacity = Integer.parseInt(args[2].toString());
+            passengers = Integer.parseInt(args[3].toString());
         }
-        jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
-        msg.addReceiver(new AID("Peter", AID.ISLOCALNAME));
-        msg.setLanguage("English");
-        msg.setOntology("Weather-forecast-ontology");
-        msg.setContent("Today it’s raining");
-        send(msg);
+        addBehaviour(new StartingMessage());
+    }
+    public class StartingMessage extends OneShotBehaviour {
+        public void action() {
+            jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
+            msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
+            msg.setLanguage("English");
+            msg.setOntology("Weather-forecast-ontology");
+            msg.setContent("Today it’s raining");
+            send(msg);
+        }
     }
 
 }
