@@ -1,11 +1,15 @@
 package Agents;
 
+import AgentBehaviours.ListeningTowerBehaviour;
 import jade.core.*;
 import jade.lang.acl.ACLMessage;
 import jade.core.behaviours.CyclicBehaviour;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ControlTower extends Agent{
-    private Airplane[] airplanes;
+    private Set<Airplane> airplanes = new HashSet<>();
 
     public void takeDown() {
         System.out.println(getLocalName() + ": done working.");
@@ -13,24 +17,10 @@ public class ControlTower extends Agent{
 
     public void setup() {
         System.out.println("New control tower");
-        addBehaviour(new ListeningBehaviour());
+        addBehaviour(new ListeningTowerBehaviour(this));
     }
-    class ListeningBehaviour extends CyclicBehaviour {
-
-        public void action() {
-            ACLMessage msg = receive();
-            if(msg != null) {
-                System.out.println(msg);
-                System.out.println("Received msg");
-                ACLMessage reply = msg.createReply();
-                reply.setPerformative(ACLMessage.INFORM);
-                reply.setContent("Got your message!");
-                send(reply);
-                System.out.println(msg.getSender());
-            } else {
-                block();
-            }
-        }
+    public void pushAirplane(Airplane airplane) {
+        airplanes.add(airplane);
+        System.out.println(airplanes);
     }
-
 }

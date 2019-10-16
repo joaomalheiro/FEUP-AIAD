@@ -11,6 +11,16 @@ public class Airplane extends Agent {
     private int capacity;
     private int passengers;
 
+    public Airplane(){};
+
+    public Airplane(String message){
+        String[] args = message.split(" ");
+        this.id = Integer.parseInt(args[1]);
+        this.fuel = Float.parseFloat(args[2]);
+        this.capacity = Integer.parseInt(args[3]);
+        this.passengers = Integer.parseInt(args[4]);
+    }
+
     public void takeDown() {
         System.out.println(getLocalName() + ": done working.");
     }
