@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Start the ControlTower
+startControlTower="java -cp lib/jade.jar:classes jade.Boot -gui -agents eco:Agents.ControlTower"
+
+#============================#
+
+# Start the airplanes
+
+# Run at least 1 airplane
+if [ $# -eq 0 ]
+  then
+    numberOfPlanes=1
+  else
+    numberOfPlanes=$1
+fi
+
+echo "Starting $numberOfPlanes airplanes"
+for i in `seq 1 $numberOfPlanes`
+do
+  startControlTower="$startControlTower;airplane${i}:Agents.Airplane"
+done
+
+$startControlTower

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "Compiling in ${OSTYPE}"
+
+if [ "$1" == "all" ]
+then 
+    echo "Compiling all the agents"
+    javac -classpath lib/jade.jar -d classes src/*/*.java
+else
+    echo "Compiling agent $1"
+    javac -classpath lib/jade.jar -d classes src/"$1"/*.java
+fi

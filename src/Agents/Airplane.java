@@ -1,5 +1,6 @@
 package Agents;
 
+import AgentBehaviours.AirplaneFuelTicker;
 import AgentBehaviours.AirplaneToControlTower;
 import jade.core.*;
 
@@ -36,10 +37,16 @@ public class Airplane extends Agent {
             passengers = Integer.parseInt(args[3].toString());
         }
         addBehaviour(new AirplaneToControlTower(this));
+        addBehaviour(new AirplaneFuelTicker(this, 1000));
     }
 
     @Override
     public String toString() {
         return this.getLocalName() + " " + id + " " + fuel + " " + capacity + " " + passengers;
+    }
+
+    public void decrementFuel() {
+        this.fuel--;
+        System.out.println(this.fuel);
     }
 }
