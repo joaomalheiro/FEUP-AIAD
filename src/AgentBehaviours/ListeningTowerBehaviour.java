@@ -2,6 +2,7 @@ package AgentBehaviours;
 
 import Agents.Airplane;
 import Agents.ControlTower;
+import AuxiliarClasses.AirplaneInfo;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
@@ -18,7 +19,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
         if(msg != null) {
             System.out.println(msg);
             System.out.println("Received msg");
-            Airplane airplane = new Airplane(msg.getContent());
+            AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
             controlTower.pushAirplane(airplane);
             ACLMessage reply = msg.createReply();
             reply.setPerformative(ACLMessage.INFORM);

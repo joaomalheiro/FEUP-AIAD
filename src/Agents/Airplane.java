@@ -11,6 +11,9 @@ public class Airplane extends Agent {
     private float fuel;
     private int capacity;
     private int passengers;
+    private int timeToTower;
+    private boolean landed = false;
+    private int timeWaiting = 0;
 
     public Airplane(){};
 
@@ -20,6 +23,7 @@ public class Airplane extends Agent {
         this.fuel = Float.parseFloat(args[2]);
         this.capacity = Integer.parseInt(args[3]);
         this.passengers = Integer.parseInt(args[4]);
+        this.timeToTower = Integer.parseInt(args[5]);
     }
 
     public void takeDown() {
@@ -42,11 +46,24 @@ public class Airplane extends Agent {
 
     @Override
     public String toString() {
-        return this.getLocalName() + " " + id + " " + fuel + " " + capacity + " " + passengers;
+        return this.getLocalName() + " " + id + " " + fuel + " " + capacity + " " + passengers + " " + timeToTower + " " + timeWaiting;
     }
 
-    public void decrementFuel() {
+    public void timeTick() {
         this.fuel--;
-        System.out.println(this.fuel);
+        if(this.timeToTower >= 1) {
+            this.timeToTower--;
+        } else {
+            this.timeToTower = 0;
+            this.timeWaiting++;
+        }
+    }
+
+    public int getTimeToTower() {
+        return timeToTower;
+    }
+
+    public void setTimeToTower(int timeToTower) {
+        this.timeToTower = timeToTower;
     }
 }
