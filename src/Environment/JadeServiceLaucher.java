@@ -42,13 +42,13 @@ public class JadeServiceLaucher {
 
 			// Ryanair airplanes
 			for(int i = 0; i < N_AIRPLANES_PER_COMPANY; i++) {
-				Airplane ap = new Airplane("Ryanair" + i + " " + i + " 3 4 5");
+				Airplane ap = new Airplane("Ryanair" + (i + 1) + " " + i + " 3 4 5 12");
 				agentContainer.acceptNewAgent("Ryanair" + i, ap).start();
 			}
 
 			// TAP airplanes
 			for(int i = 0; i < N_AIRPLANES_PER_COMPANY; i++) {
-				Airplane ap = new Airplane("Tap" + i + " " + i + " 13 14 15");
+				Airplane ap = new Airplane("Tap" + (i + 1) + " " + i + " 13 14 15 20");
 				agentContainer.acceptNewAgent("Tap" + i, ap).start();
 			}
 
