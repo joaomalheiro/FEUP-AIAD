@@ -39,16 +39,16 @@ public class JadeServiceLaucher {
 
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
-
+			int id = 0;
 			// Ryanair airplanes
-			for(int i = 0; i < N_AIRPLANES_PER_COMPANY; i++) {
-				Airplane ap = new Airplane("Ryanair" + (i + 1) + " " + i + " 3 4 5 12");
+			for(int i = 0; i < N_AIRPLANES_PER_COMPANY; i++,id++) {
+				Airplane ap = new Airplane("Ryanair" + (i + 1) + " " + id + " 3 4 5 12");
 				agentContainer.acceptNewAgent("Ryanair" + i, ap).start();
 			}
 
 			// TAP airplanes
-			for(int i = 0; i < N_AIRPLANES_PER_COMPANY; i++) {
-				Airplane ap = new Airplane("Tap" + (i + 1) + " " + i + " 13 14 15 20");
+			for(int i = 0; i < N_AIRPLANES_PER_COMPANY; i++,id++) {
+				Airplane ap = new Airplane("Tap" + (i + 1) + " " + id + " 13 14 15 20");
 				agentContainer.acceptNewAgent("Tap" + i, ap).start();
 			}
 

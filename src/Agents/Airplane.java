@@ -41,7 +41,6 @@ public class Airplane extends Agent {
             passengers = Integer.parseInt(args[3].toString());
             timeToTower = Integer.parseInt(args[4].toString());
         }
-        addBehaviour(new AirplaneToControlTower(this));
         addBehaviour(new AirplaneFuelTicker(this, 1000));
     }
 
