@@ -2,6 +2,7 @@ package AuxiliarClasses;
 
 import Agents.Airplane;
 
+import java.util.Comparator;
 public class AirplaneInfo {
 
     public int getId() {
@@ -41,6 +42,7 @@ public class AirplaneInfo {
 
     public AirplaneInfo(String message) {
         String[] args = message.split(" ");
+        this.localName = args[0];
         this.id = Integer.parseInt(args[1]);
         this.fuel = Float.parseFloat(args[2]);
         this.capacity = Integer.parseInt(args[3]);
@@ -50,8 +52,7 @@ public class AirplaneInfo {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        AirplaneInfo airplane = (AirplaneInfo) obj;
-        return this.id == airplane.getId();
-    }
+    public String toString() {
+       return localName + " " + id + " " + fuel + " " + capacity + " " + passengers + " " + timeToTower + " " + timeWaiting;
+     }
 }

@@ -12,7 +12,10 @@ public class ControlTower extends Agent{
 
     Comparator<AirplaneInfo> airplaneComparator = new Comparator<AirplaneInfo>() {
         @Override public int compare(AirplaneInfo a1, AirplaneInfo a2) {
-            return Float.compare(a1.getFuel(),a2.getFuel());
+            if(a1.getId() != a2.getId())
+                return Float.compare(a1.getFuel(),a2.getFuel());
+            else
+                return Integer.compare(a1.getId(),a2.getId());
         }
     };
 
@@ -28,8 +31,17 @@ public class ControlTower extends Agent{
     public void pushAirplane(AirplaneInfo airplane) {
         airplanes.remove(airplane);
         airplanes.add(airplane);
-        System.out.println(airplanes);
+       /* Iterator<AirplaneInfo> iterator = airplanes.iterator();
+
+        // Loop over the TreeSet values
+        // and print the values
+        System.out.print("TreeSet: ");
+        while (iterator.hasNext())
+            System.out.print(iterator.next()
+                    + ", ");
+        System.out.println();*/
     }
 }
+
 
 

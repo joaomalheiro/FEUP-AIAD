@@ -39,6 +39,7 @@ public class Airplane extends Agent {
             fuel = Float.parseFloat(args[1].toString());
             capacity = Integer.parseInt(args[2].toString());
             passengers = Integer.parseInt(args[3].toString());
+            timeToTower = Integer.parseInt(args[4].toString());
         }
         addBehaviour(new AirplaneToControlTower(this));
         addBehaviour(new AirplaneFuelTicker(this, 1000));
@@ -46,7 +47,7 @@ public class Airplane extends Agent {
 
     @Override
     public String toString() {
-        return this.getLocalName() + " " + id + " " + fuel + " " + capacity + " " + passengers + " " + timeToTower + " " + timeWaiting;
+        return getLocalName() + " " + id + " " + fuel + " " + capacity + " " + passengers + " " + timeToTower + " " + timeWaiting;
     }
 
     public void timeTick() {
