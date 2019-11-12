@@ -18,7 +18,6 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
         ACLMessage msg = controlTower.receive();
         if(msg != null) {
             //System.out.println(msg);
-            //System.out.println("Received msg");
             AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
             controlTower.pushAirplane(airplane);
             ACLMessage reply = msg.createReply();
