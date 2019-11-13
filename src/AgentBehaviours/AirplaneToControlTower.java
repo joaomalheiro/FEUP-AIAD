@@ -15,7 +15,6 @@ public class AirplaneToControlTower extends OneShotBehaviour {
         jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
         msg.setLanguage("English");
-        msg.setOntology("Weather-forecast-ontology");
         msg.setContent(airplane.toString());
         airplane.send(msg);
     }
