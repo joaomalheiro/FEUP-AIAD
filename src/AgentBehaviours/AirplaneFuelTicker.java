@@ -17,6 +17,7 @@ public class AirplaneFuelTicker extends TickerBehaviour {
 
     public void informTower() {
         jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
+        msg.addUserDefinedParameter("AGENT_TYPE", "AIRPLANE");
         msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
         msg.setLanguage("English");
         msg.setOntology("Weather-forecast-ontology");

@@ -16,17 +16,35 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
     public void action() {
         ACLMessage msg = controlTower.receive();
+
         if(msg != null) {
-            //System.out.println(msg);
-            AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
-            controlTower.pushAirplane(airplane);
-            ACLMessage reply = msg.createReply();
-            reply.setPerformative(ACLMessage.INFORM);
-            reply.setContent("Got your message!");
-            controlTower.send(reply);
+            switch (msg.getAllUserDefinedParameters().get("AGENT_TYPE").toString()){
+                case "PASSENGERVEHICLE":
+                    passengerVehicleMessage(msg);
+                    break;
+                case "AIRPLANE":
+                    airplaneMessage(msg);
+                    break;
+                default:
+                    System.out.println("ListeningTowerBehaviour - ERROR: agent type unknown");
+            }
         } else {
             block();
         }
+    }
+
+    private void airplaneMessage(ACLMessage msg) {
+        AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
+        controlTower.pushAirplane(airplane);
+        ACLMessage reply = msg.createReply();
+        reply.addUserDefinedParameter("AGENT_TYPE", "CONTROLTOWER");
+        reply.setPerformative(ACLMessage.INFORM);
+        reply.setContent("Got your message!");
+        controlTower.send(reply);
+    }
+
+    private void passengerVehicleMessage(ACLMessage msg) {
+        System.out.println("VEHICLE MESSAGE: " + msg.getContent());
     }
 }
 
