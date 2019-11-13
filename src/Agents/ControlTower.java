@@ -12,10 +12,14 @@ public class ControlTower extends Agent{
 
     Comparator<AirplaneInfo> airplaneComparator = new Comparator<AirplaneInfo>() {
         @Override public int compare(AirplaneInfo a1, AirplaneInfo a2) {
-            if(a1.getId() != a2.getId())
-                return Float.compare(a1.getFuel(),a2.getFuel());
+            if(!a1.getLocalName().equals(a2.getLocalName())){
+                if(a1.getFuel() > a2.getFuel())
+                    return 1;
+                else
+                    return -1;
+            }
             else
-                return Integer.compare(a1.getId(),a2.getId());
+                return 0;
         }
     };
 
@@ -29,9 +33,9 @@ public class ControlTower extends Agent{
         addBehaviour(new ListeningTowerBehaviour(this));
     }
     public void pushAirplane(AirplaneInfo airplane) {
-        airplanes.remove(airplane);
+        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
         airplanes.add(airplane);
-       /* Iterator<AirplaneInfo> iterator = airplanes.iterator();
+        Iterator<AirplaneInfo> iterator = airplanes.iterator();
 
         // Loop over the TreeSet values
         // and print the values
@@ -39,7 +43,7 @@ public class ControlTower extends Agent{
         while (iterator.hasNext())
             System.out.print(iterator.next()
                     + ", ");
-        System.out.println();*/
+        System.out.println();
     }
 }
 

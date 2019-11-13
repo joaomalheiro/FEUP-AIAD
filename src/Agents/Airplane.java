@@ -1,7 +1,6 @@
 package Agents;
 
 import AgentBehaviours.AirplaneFuelTicker;
-import AgentBehaviours.AirplaneToControlTower;
 import jade.core.*;
 
 
@@ -41,7 +40,6 @@ public class Airplane extends Agent {
             passengers = Integer.parseInt(args[3].toString());
             timeToTower = Integer.parseInt(args[4].toString());
         }
-        addBehaviour(new AirplaneToControlTower(this));
         addBehaviour(new AirplaneFuelTicker(this, 1000));
     }
 
