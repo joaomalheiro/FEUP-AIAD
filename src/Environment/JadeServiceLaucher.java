@@ -40,7 +40,7 @@ public class JadeServiceLaucher {
 
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
-			Company cp = new Company();
+			Company cp = new Company(1000);
 			agentContainer.acceptNewAgent("Ryanair" , cp).start();
 
 		} catch (StaleProxyException e) {

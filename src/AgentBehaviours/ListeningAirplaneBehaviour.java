@@ -6,29 +6,29 @@ import AuxiliarClasses.AirplaneInfo;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
-public class ListeningTowerBehaviour extends CyclicBehaviour {
+public class ListeningAirplaneBehaviour extends CyclicBehaviour {
 
-    private ControlTower controlTower;
+    private Airplane airplane;
 
-    public ListeningTowerBehaviour(ControlTower controlTower){
-        this.controlTower = controlTower;
+    public ListeningAirplaneBehaviour(Airplane airplane){
+        this.airplane = airplane;
     }
 
     public void action() {
-        ACLMessage msg = controlTower.receive();
+        ACLMessage msg = airplane.receive();
         if(msg != null && !msg.getContent().equals("Got your message!")) {
             //System.out.println(msg);
-            AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
-            controlTower.pushAirplane(airplane);
-            if(airplane.getTimeToTower() == 0)
-                controlTower.landAirplane(airplane);
+            if(msg.getContent().equals("Landed")){
+                airplane.landPlane();
+                System.out.println("LANDED Airplane");
+            }
+
             ACLMessage reply = msg.createReply();
             reply.setPerformative(ACLMessage.INFORM);
             reply.setContent("Got your message!");
-            controlTower.send(reply);
+            airplane.send(reply);
         } else {
             block();
         }
     }
 }
-

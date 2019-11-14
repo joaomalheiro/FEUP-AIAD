@@ -1,10 +1,9 @@
 package Agents;
 
+import AgentBehaviours.AirplaneLanded;
 import AgentBehaviours.ListeningTowerBehaviour;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.*;
-import jade.lang.acl.ACLMessage;
-import jade.core.behaviours.CyclicBehaviour;
 
 import java.util.*;
 
@@ -24,6 +23,8 @@ public class ControlTower extends Agent{
     };
 
     private TreeSet<AirplaneInfo> airplanes = new TreeSet<>(airplaneComparator);
+    private Map<String, Integer> companyPriorities = new HashMap<>();
+
     public void takeDown() {
         System.out.println(getLocalName() + ": done working.");
     }
@@ -44,6 +45,14 @@ public class ControlTower extends Agent{
             System.out.print(iterator.next()
                     + ", ");
         System.out.println();
+    }
+
+    public void insertCompany(Company company, int priority){
+        companyPriorities.put(company.getLocalName(),priority);
+    }
+
+    public void landAirplane(AirplaneInfo airplane){
+        addBehaviour(new AirplaneLanded(airplane));
     }
 }
 

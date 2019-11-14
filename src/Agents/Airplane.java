@@ -1,6 +1,7 @@
 package Agents;
 
 import AgentBehaviours.AirplaneFuelTicker;
+import AgentBehaviours.ListeningAirplaneBehaviour;
 import jade.core.*;
 
 
@@ -11,8 +12,15 @@ public class Airplane extends Agent {
     private int capacity;
     private int passengers;
     private int timeToTower;
+
+    public void landPlane() {
+        this.landed = true;
+    }
+
     private boolean landed = false;
     private int timeWaiting = 0;
+    private int priority;
+    private String companyName;
 
     public Airplane(){};
 
@@ -41,6 +49,8 @@ public class Airplane extends Agent {
             timeToTower = Integer.parseInt(args[4].toString());
         }
         addBehaviour(new AirplaneFuelTicker(this, 1000));
+        addBehaviour(new ListeningAirplaneBehaviour(this));
+
     }
 
     @Override
