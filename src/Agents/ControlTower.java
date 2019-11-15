@@ -31,6 +31,7 @@ public class ControlTower extends Agent{
     };
 
     private TreeSet<AirplaneInfo> airplanes = new TreeSet<>(airplaneComparator);
+    private Map<String, Integer> companyPriorities = new HashMap<>();
 
     private Vector<AID> passenger_vehicles;
 
@@ -117,6 +118,14 @@ public class ControlTower extends Agent{
             System.out.print(iterator.next()
                     + ", ");
         System.out.println();
+    }
+
+    public void insertCompany(Company company, int priority){
+        companyPriorities.put(company.getLocalName(),priority);
+    }
+
+    public void landAirplane(AirplaneInfo airplane){
+        addBehaviour(new AirplaneLanded(airplane));
     }
 
 }
