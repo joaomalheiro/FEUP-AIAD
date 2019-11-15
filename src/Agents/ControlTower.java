@@ -1,6 +1,7 @@
 package Agents;
 
 import AgentBehaviours.ListeningTowerBehaviour;
+import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.*;
 import jade.domain.DFService;
@@ -63,9 +64,6 @@ public class ControlTower extends Agent{
 
     private void initialPassengerVehicleSearch(){
         DFAgentDescription dfd = passengerVehicleDFAgentDescriptorCreator();
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType("passenger_vehicle");
-        dfd.addServices(sd);
 
         try {
             DFAgentDescription[] search_result = DFService.search(this, dfd);

@@ -1,6 +1,6 @@
 package Agents;
 
-import AgentBehaviours.PassengerVehicleStartWork;
+import AuxiliarClasses.AgentType;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -29,7 +29,7 @@ public class PassengerVehicle extends Agent {
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("passenger_vehicle");
+        sd.setType(AgentType.PASSENGER_VEHICLE.toString());
         sd.setName(getLocalName());
         dfd.addServices(sd);
 
