@@ -1,6 +1,7 @@
 package Agents;
 
 import AgentBehaviours.CompanyAirplane;
+import AgentBehaviours.ListeningCompanyBehaviour;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.Agent;
 import jade.util.leap.ArrayList;
@@ -23,6 +24,7 @@ public class Company extends Agent {
 
     public void setup(){
         addBehaviour(new CompanyAirplane(this, 5000));
+        addBehaviour(new ListeningCompanyBehaviour(this));
     }
 
     public void addAirplane(Airplane a1) {
@@ -39,6 +41,7 @@ public class Company extends Agent {
     public void updateAirplane(AirplaneInfo airplane) {
        int airplaneProfit = airplane.getPassengers() * 10 - airplane.getTimeWaiting() * airplane.getPassengers();
        changeFunds(airplaneProfit);
+       System.out.println("Profit " + airplaneProfit);
        airplanes.removeIf(ap -> ap.getId() == airplane.getId());
     }
 

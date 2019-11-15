@@ -17,7 +17,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     public void action() {
         ACLMessage msg = controlTower.receive();
 
-        if(msg != null) {
+        if (msg != null && !msg.getContent().equals("Got your message!")) {
             switch (msg.getAllUserDefinedParameters().get("AGENT_TYPE").toString()){
                 case "PASSENGERVEHICLE":
                     passengerVehicleMessage(msg);
@@ -26,16 +26,16 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
                     airplaneMessage(msg);
                     break;
                 default:
-                    defaultHandler(msg);
+                    System.out.println("ListeningTowerBehaviour - ERROR: agent type unknown");
             }
         } else {
             block();
         }
     }
 
-    private void defaultHandler(ACLMessage msg) {
+
+    private void airplaneMessage(ACLMessage msg) {
         if (msg != null && !msg.getContent().equals("Got your message!")) {
-            //System.out.println(msg);
             AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
             controlTower.pushAirplane(airplane);
             if (airplane.getTimeToTower() == 0)
@@ -45,16 +45,6 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
             reply.setContent("Got your message!");
             controlTower.send(reply);
         }
-    }
-
-    private void airplaneMessage(ACLMessage msg) {
-        AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
-        controlTower.pushAirplane(airplane);
-        ACLMessage reply = msg.createReply();
-        reply.addUserDefinedParameter("AGENT_TYPE", "CONTROLTOWER");
-        reply.setPerformative(ACLMessage.INFORM);
-        reply.setContent("Got your message!");
-        controlTower.send(reply);
     }
 
     private void passengerVehicleMessage(ACLMessage msg) {

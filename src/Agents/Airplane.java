@@ -12,11 +12,6 @@ public class Airplane extends Agent {
     private int capacity;
     private int passengers;
     private int timeToTower;
-
-    public void landPlane() {
-        this.landed = true;
-    }
-
     private boolean landed = false;
     private int timeWaiting = 0;
     private int priority;
@@ -74,5 +69,9 @@ public class Airplane extends Agent {
 
     public void setTimeToTower(int timeToTower) {
         this.timeToTower = timeToTower;
+    }
+
+    public void landPlane() {
+        this.landed = true;
     }
 }

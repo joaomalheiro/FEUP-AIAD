@@ -20,5 +20,12 @@ public class AirplaneLanded extends OneShotBehaviour {
         msg.setOntology("Weather-forecast-ontology");
         msg.setContent("Landed");
         myAgent.send(msg);
+
+        jade.lang.acl.ACLMessage msgCompany = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
+        msgCompany.addReceiver(new AID(airplane.getLocalName().replaceAll("\\d",""), AID.ISLOCALNAME));
+        msgCompany.setLanguage("English");
+        msgCompany.setOntology("Weather-forecast-ontology");
+        msgCompany.setContent(airplane.toString());
+        myAgent.send(msgCompany);
     }
 }

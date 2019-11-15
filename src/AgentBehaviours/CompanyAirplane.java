@@ -8,6 +8,7 @@ import jade.wrapper.StaleProxyException;
 
 public class CompanyAirplane extends TickerBehaviour {
     private Company company;
+    private int idCounter = 1;
     public CompanyAirplane(Company company, long period) {
         super(company, period);
         this.company = company;
@@ -15,12 +16,13 @@ public class CompanyAirplane extends TickerBehaviour {
 
     @Override
     protected void onTick() {
-        Airplane ap = new Airplane(company.getLocalName() + (company.getAirplanes().size() + 1) + " " + company.getAirplanes().size() + " 20 40 35 12");
+        Airplane ap = new Airplane(company.getLocalName() + idCounter + " " + idCounter + " 20 40 35 12");
         try {
-            JadeServiceLaucher.agentContainer.acceptNewAgent(company.getLocalName() + (company.getAirplanes().size() + 1), ap).start();
+            JadeServiceLaucher.agentContainer.acceptNewAgent(company.getLocalName() + idCounter, ap).start();
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
+        idCounter++;
         company.addAirplane(ap);
         System.out.println(ap);
     }
