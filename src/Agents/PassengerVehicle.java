@@ -1,6 +1,7 @@
 package Agents;
 
 import AuxiliarClasses.AgentType;
+import AuxiliarClasses.TransportTask;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -11,6 +12,7 @@ public class PassengerVehicle extends Agent {
 
     private int id;
     private int capacity;
+    private TransportTask current_task = null;
     // private int speed;
     // private int fuel;
 
