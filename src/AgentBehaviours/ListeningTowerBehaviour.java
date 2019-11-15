@@ -5,6 +5,7 @@ import Agents.ControlTower;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.util.leap.Properties;
 
 public class ListeningTowerBehaviour extends CyclicBehaviour {
 
@@ -18,15 +19,18 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
         ACLMessage msg = controlTower.receive();
 
         if(msg != null) {
-            switch (msg.getAllUserDefinedParameters().get("AGENT_TYPE").toString()){
-                case "PASSENGERVEHICLE":
-                    passengerVehicleMessage(msg);
-                    break;
-                case "AIRPLANE":
-                    airplaneMessage(msg);
-                    break;
-                default:
-                    System.out.println("ListeningTowerBehaviour - ERROR: agent type unknown");
+            Object tmp = msg.getAllUserDefinedParameters().get("AGENT_TYPE");
+            if(tmp != null) {
+                switch (tmp.toString()) {
+                    case "PASSENGERVEHICLE":
+                        passengerVehicleMessage(msg);
+                        break;
+                    case "AIRPLANE":
+                        airplaneMessage(msg);
+                        break;
+                    default:
+                        System.out.println("ListeningTowerBehaviour - ERROR: agent type unknown");
+                }
             }
         } else {
             block();
