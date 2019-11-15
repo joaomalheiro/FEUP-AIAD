@@ -3,6 +3,7 @@ package Environment;
 import Agents.Airplane;
 import Agents.Company;
 import Agents.ControlTower;
+import Agents.PassengerVehicle;
 import gui.AirportGUI;
 import jade.core.AID;
 import jade.core.Profile;
@@ -48,6 +49,8 @@ public class JadeServiceLaucher {
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
 			Company cp = new Company(1000);
 			agentContainer.acceptNewAgent("Ryanair" , cp).start();
+			PassengerVehicle pv = new PassengerVehicle();
+			agentContainer.acceptNewAgent("Vehicle1", pv).start();
 			return controlTower;
 
 		} catch (StaleProxyException e) {

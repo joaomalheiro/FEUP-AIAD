@@ -2,9 +2,11 @@ package AgentBehaviours;
 
 import Agents.Airplane;
 import Agents.ControlTower;
+import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.util.leap.Properties;
 
 public class ListeningTowerBehaviour extends CyclicBehaviour {
 
