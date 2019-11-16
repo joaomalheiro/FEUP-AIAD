@@ -1,5 +1,7 @@
 package gui;
 
+import Agents.ControlTower;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,8 +15,10 @@ import javax.swing.JPanel;
 public class AirportPanel extends JPanel {
 	
 	private HashMap<String, BufferedImage> loadedImages;
+    private ControlTower controlTower;
 	
-	AirportPanel() {
+	AirportPanel(ControlTower ct) {
+	    controlTower = ct;
         loadedImages = new HashMap<>();
         try {
             loadedImages.put("background", ImageIO.read(new File("images/background.png")));
@@ -28,20 +32,15 @@ public class AirportPanel extends JPanel {
 	@Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Character[][] map = new Character[50][50];
-        for (Character[] row: map)
-            Arrays.fill(row, '*');
-        
-        map[15][15] = 'C';
-        drawBackground(g, map);
-        drawAgents(g, map);
+        drawBackground(g, controlTower.getMap());
+        drawAgents(g, controlTower.getMap());
     }
 	
 	private void drawBackground(Graphics g, Character[][] map) {
 		System.out.println(map.length);
         for (int i = 0; i < map.length; ++i)
             for (int j = 0; j < map[i].length; ++j) {
-                g.drawImage(loadedImages.get("background"), j * 8, i * 8, null);
+                g.drawImage(loadedImages.get("background"), j * 16, i * 16, null);
             }
     }
 	
@@ -55,10 +54,10 @@ public class AirportPanel extends JPanel {
 	private void chooseImage(Graphics g, Character character, int i, int j) {
 		  switch(character) {	
 		  	case 'C':
-		  		g.drawImage(loadedImages.get("controlTower"), j * 8, i * 8, null);
+		  		g.drawImage(loadedImages.get("controlTower"), j * 16, i * 16, null);
 		  		break;
 			case 'A':
-		  		g.drawImage(loadedImages.get("airplane"), j * 8, i * 8, null);
+		  		g.drawImage(loadedImages.get("airplane"), j * 16, i * 16, null);
 		  		break;
 		  }
 	}

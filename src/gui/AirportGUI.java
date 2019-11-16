@@ -12,6 +12,10 @@ public class AirportGUI extends JPanel {
 	private ControlTower controlTower;
 	private JFrame frame;
 	private AirportPanel panel;
+
+	public AirportPanel getPanel() {
+		return panel;
+	}
 	
 	public AirportGUI(ControlTower ct)  {
 		
@@ -19,11 +23,7 @@ public class AirportGUI extends JPanel {
 		initializeFrame();
 		initializePanel();
 		
-		while(true) {
-			panel.repaint();
-			panel.setFocusable(true);
-			panel.requestFocusInWindow();
-		}
+		this.controlTower.setGui(this);
 	}
 	
 	private void initializeFrame() {
@@ -39,7 +39,7 @@ public class AirportGUI extends JPanel {
 	
 	private void initializePanel() {
 		//game box
-		panel = new AirportPanel();
+		panel = new AirportPanel(controlTower);
 		panel.setBounds(50, 50, 360, 400);
 		panel.setVisible(true);
 		panel.setFocusable(true);
