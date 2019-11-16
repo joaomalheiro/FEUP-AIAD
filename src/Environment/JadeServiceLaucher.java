@@ -34,7 +34,7 @@ public class JadeServiceLaucher {
 		}
 
 		ControlTower ct = launchAgents();
-		//launchGUI(ct);
+		launchGUI(ct);
 	}
 	
 	protected void launchGUI(ControlTower ct) {

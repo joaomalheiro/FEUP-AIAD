@@ -15,6 +15,24 @@ public class AirplaneInfo {
     private int timeToTower;
     private int timeWaiting = 0;
     private String localName;
+    private int x;
+    private int y;
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 
     public float getFuel() {
         return fuel;

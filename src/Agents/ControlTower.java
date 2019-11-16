@@ -4,6 +4,7 @@ import AgentBehaviours.AirplaneLanded;
 import AgentBehaviours.ListeningTowerBehaviour;
 import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
+import gui.AirportGUI;
 import jade.core.*;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -35,14 +36,33 @@ public class ControlTower extends Agent{
 
     private Vector<AID> passenger_vehicles;
 
+    private Character[][] map;
+    private int currLine;
+    private AirportGUI gui;
+
 
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
+
+        map = new Character[20][20];
+        for (Character[] row: map)
+            Arrays.fill(row, '*');
+
+        map[9][0] = 'C';
+        currLine = 0;
     }
 
     // **** GETTERS AND SETTERS ****
     public Vector<AID> getPassenger_vehicles() {
         return passenger_vehicles;
+    }
+
+    public Character[][] getMap() {
+        return map;
+    }
+
+    public void setGui(AirportGUI gui) {
+        this.gui = gui;
     }
 
     public void takeDown() {
@@ -102,14 +122,43 @@ public class ControlTower extends Agent{
                 catch (FIPAException fe) {fe.printStackTrace(); }
             }
         });
-
     }
 
 
     public void pushAirplane(AirplaneInfo airplane) {
-        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
+        int y= -1;
+        for (AirplaneInfo value : airplanes) {
+            if (value.getLocalName().equals(airplane.getLocalName())) {
+                y = value.getY();
+                map[value.getX()][value.getY()] = '*';
+                break;
+            }
+        }
+
+        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()));
         airplanes.add(airplane);
+
         Iterator<AirplaneInfo> iterator = airplanes.iterator();
+
+        System.out.println();
+
+        if(y != -1) {
+            map[10 - airplane.getTimeToTower()][y] = 'A';
+            airplane.setX(10 - airplane.getTimeToTower());
+            airplane.setY(y);
+        } else {
+            map[10 - airplane.getTimeToTower()][currLine] = 'A';
+            airplane.setX(10-airplane.getTimeToTower());
+            airplane.setY(currLine);
+
+            if(currLine < 19)
+                currLine++;
+            else currLine = 0;
+        }
+
+        gui.getPanel().repaint();
+        gui.getPanel().setFocusable(true);
+        gui.getPanel().requestFocusInWindow();;
 
         // Loop over the TreeSet values
         // and print the values
