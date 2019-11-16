@@ -29,7 +29,7 @@ public class AirplaneFuelTicker extends TickerBehaviour {
     @Override
     protected void onTick() {
         this.airplane.timeTick();
-        if(airplane.getTimeToTower() <= 10){
+        if(airplane.getTimeToTower() <= 10 && !airplane.isLanded()){
             informTower();
         }
 
