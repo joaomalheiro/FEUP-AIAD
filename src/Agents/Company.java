@@ -1,6 +1,7 @@
 package Agents;
 
 import AgentBehaviours.CompanyAirplane;
+import AgentBehaviours.CompanyPriorityStrategy;
 import AgentBehaviours.ListeningCompanyBehaviour;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.Agent;
@@ -23,8 +24,9 @@ public class Company extends Agent {
     Set<AirplaneInfo> airplanes = new HashSet<>();
 
     public void setup(){
-        addBehaviour(new CompanyAirplane(this, 5000));
+        addBehaviour(new CompanyAirplane(this, 20000));
         addBehaviour(new ListeningCompanyBehaviour(this));
+        addBehaviour(new CompanyPriorityStrategy(this, CompanyPriorityStrategy.Strategy.RANDOM ,5000));
     }
 
     public void addAirplane(Airplane a1) {
@@ -38,10 +40,10 @@ public class Company extends Agent {
         System.out.println("Funds: " + funds);
     }
 
-    public void updateAirplane(AirplaneInfo airplane) {
-       int airplaneProfit = airplane.getPassengers() * 10 - airplane.getTimeWaiting() * airplane.getPassengers();
+    public void landAirplane(AirplaneInfo airplane,int valuePerPassenger) {
+       int airplaneProfit = airplane.getPassengers() * valuePerPassenger - airplane.getTimeWaiting() * airplane.getPassengers();
        changeFunds(airplaneProfit);
-       System.out.println("Profit " + airplaneProfit);
+       System.out.println("Profit " + (airplaneProfit - (airplane.getCapacity() * 5)));
        airplanes.removeIf(ap -> ap.getId() == airplane.getId());
     }
 

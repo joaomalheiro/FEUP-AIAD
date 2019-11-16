@@ -9,9 +9,11 @@ import jade.lang.acl.ACLMessage;
 public class AirplaneLanded extends OneShotBehaviour {
 
     private AirplaneInfo airplane;
+    private int valuePerPassenger;
 
-    public AirplaneLanded(AirplaneInfo airplane) {
+    public AirplaneLanded(AirplaneInfo airplane,int valuePerPassenger) {
         this.airplane = airplane;
+        this.valuePerPassenger = valuePerPassenger;
     }
     public void action() {
         jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
@@ -25,7 +27,7 @@ public class AirplaneLanded extends OneShotBehaviour {
         msgCompany.addReceiver(new AID(airplane.getLocalName().replaceAll("\\d",""), AID.ISLOCALNAME));
         msgCompany.setLanguage("English");
         msgCompany.setOntology("Weather-forecast-ontology");
-        msgCompany.setContent(airplane.toString());
+        msgCompany.setContent(airplane.toString() + "Value:" + valuePerPassenger);
         myAgent.send(msgCompany);
     }
 }

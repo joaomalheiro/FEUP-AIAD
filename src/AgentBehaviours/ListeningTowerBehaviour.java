@@ -29,6 +29,9 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
                     case "AIRPLANE":
                         airplaneMessage(msg);
                         break;
+                    case "COMPANY":
+                        companyMessage(msg);
+                        break;
                     default:
                         System.out.println("ListeningTowerBehaviour - ERROR: agent type unknown");
                 }
@@ -36,6 +39,11 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
         } else {
             block();
         }
+    }
+
+    private void companyMessage(ACLMessage msg) {
+        String[] args = msg.getContent().split("Priority:");
+        controlTower.setPriority(args[0],Integer.parseInt(args[1]));
     }
 
 

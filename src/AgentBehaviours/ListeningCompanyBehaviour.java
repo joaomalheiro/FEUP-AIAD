@@ -17,9 +17,9 @@ public class ListeningCompanyBehaviour extends CyclicBehaviour {
     public void action() {
         ACLMessage msg = company.receive();
         if(msg != null && !msg.getContent().equals("Got your message!")) {
-            //System.out.println(msg);
-            AirplaneInfo airplane = new AirplaneInfo(msg.getContent());
-            company.updateAirplane(airplane);
+            String[] args = msg.getContent().split("Value:");
+            AirplaneInfo airplane = new AirplaneInfo(args[0]);
+            company.landAirplane(airplane,Integer.parseInt(args[1]));
             ACLMessage reply = msg.createReply();
             reply.setPerformative(ACLMessage.INFORM);
             reply.setContent("Got your message!");

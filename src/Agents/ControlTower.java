@@ -117,17 +117,16 @@ public class ControlTower extends Agent{
         while (iterator.hasNext())
             System.out.print(iterator.next()
                     + ", ");
-        System.out.println();
-    }
-
-    public void insertCompany(Company company, int priority){
-        companyPriorities.put(company.getLocalName(),priority);
-    }
+        System.out.println(); }
 
     public void landAirplane(AirplaneInfo airplane){
-        addBehaviour(new AirplaneLanded(airplane));
+        addBehaviour(new AirplaneLanded(airplane,10 - companyPriorities.get(airplane.getLocalName().replaceAll("\\d",""))));
+        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
     }
 
+    public void setPriority(String companyName, int priority) {
+        companyPriorities.put(companyName,priority);
+    }
 }
 
 
