@@ -21,7 +21,13 @@ public class ControlTower extends Agent{
     Comparator<AirplaneInfo> airplaneComparator = new Comparator<AirplaneInfo>() {
         @Override public int compare(AirplaneInfo a1, AirplaneInfo a2) {
             if(!a1.getLocalName().equals(a2.getLocalName())){
-                if(a1.getFuel() > a2.getFuel())
+                if(a1.getTimeToTower() > a2.getTimeToTower())
+                    return 1;
+                else if(a1.getFuel() < 5 && a1.getFuel() < a2.getFuel())
+                    return 1;
+                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d","")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d","")))
+                    return 1;
+                else if (a1.getPassengers() > a2.getPassengers())
                     return 1;
                 else
                     return -1;
