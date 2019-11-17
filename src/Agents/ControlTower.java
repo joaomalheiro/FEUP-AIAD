@@ -49,7 +49,6 @@ public class ControlTower extends Agent {
     private Vector<Pair<String, Boolean>> passenger_vehicles_availability;
 
     private Character[][] map;
-    private Character[][] vehicleMap;
     private int currLine;
     private AirportGUI gui;
 
@@ -59,10 +58,6 @@ public class ControlTower extends Agent {
         this.passenger_vehicles_availability = new Vector<>();
         map = new Character[20][20];
         for (Character[] row : map)
-            Arrays.fill(row, '*');
-
-        vehicleMap = new Character[3][10];
-        for (Character[] row: vehicleMap)
             Arrays.fill(row, '*');
 
         map[9][0] = 'C';
@@ -80,10 +75,6 @@ public class ControlTower extends Agent {
 
     public Character[][] getMap() {
         return map;
-    }
-
-    public Character[][] getVehicleMap() {
-        return vehicleMap;
     }
 
     public void setGui(AirportGUI gui) {
@@ -123,25 +114,6 @@ public class ControlTower extends Agent {
         } catch (FIPAException fe) {
             fe.printStackTrace();
         }
-    }
-
-    public void initializePassengerGUI() {
-        Iterator iterator = this.passenger_vehicles.iterator();
-        int i = 0, j = 0;
-        System.out.println(this.passenger_vehicles.size());
-        while (iterator.hasNext()) {
-            if(i > 4) {
-                i = 0;
-                j++;
-            }
-
-            this.vehicleMap[i][j] = 'A';
-            i = i + 2;
-        }
-
-        gui.getVehiclePanel().repaint();
-        gui.getVehiclePanel().setFocusable(true);
-        gui.getVehiclePanel().requestFocusInWindow();
     }
 
     private void subscribePassengerVehicleAgent() {
@@ -194,8 +166,7 @@ public class ControlTower extends Agent {
     }
 
     public void pushAirplane(AirplaneInfo airplane) {
-        int y= -1;
-        initializePassengerGUI();
+        int y = -1;
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 y = value.getY();
@@ -228,11 +199,7 @@ public class ControlTower extends Agent {
         gui.getPanel().repaint();
         gui.getPanel().setFocusable(true);
         gui.getPanel().requestFocusInWindow();
-
-        gui.getVehiclePanel().repaint();
-        gui.getVehiclePanel().setFocusable(true);
-        gui.getVehiclePanel().requestFocusInWindow();
-
+        ;
 
         // Loop over the TreeSet values
         // and print the values
@@ -243,17 +210,9 @@ public class ControlTower extends Agent {
         System.out.println();
     }
 
-    public void landAirplane(AirplaneInfo airplane){
-        addBehaviour(new AirplaneLanded(airplane,10 - companyPriorities.get(airplane.getLocalName().replaceAll("\\d",""))));
-
-        for (AirplaneInfo value : airplanes) {
-            if (value.getLocalName().equals(airplane.getLocalName())) {
-                map[value.getX()][value.getY()] = '*';
-                break;
-            }
-        }
-
-        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
+    public void landAirplane(AirplaneInfo airplane) {
+        addBehaviour(new AirplaneLanded(airplane, 10 - companyPriorities.get(airplane.getLocalName().replaceAll("\\d", ""))));
+        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()));
     }
 
     public void setPriority(String companyName, int priority) {
