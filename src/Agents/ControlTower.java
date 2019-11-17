@@ -51,7 +51,7 @@ public class ControlTower extends Agent{
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
 
-        map = new Character[20][20];
+        map = new Character[11][20];
         for (Character[] row: map)
             Arrays.fill(row, '*');
 

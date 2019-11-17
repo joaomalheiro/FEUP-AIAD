@@ -38,7 +38,7 @@ public class AirportGUI extends JPanel {
 	private void initializeFrame() {
 		
 		frame = new JFrame("Airport");
-		frame.setBounds(100, 100, 1000, 530);
+		frame.setBounds(100, 100, 1000, 800);
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setResizable(false);
@@ -49,7 +49,7 @@ public class AirportGUI extends JPanel {
 	private void initializePanel() {
 		//game box
 		panel = new AirportPanel(controlTower);
-		panel.setBounds(50, 50, 360, 200);
+		panel.setBounds(50, 50, 640, 352);
 		panel.setVisible(true);
 		panel.setFocusable(true);
 		frame.add(panel);
@@ -58,7 +58,7 @@ public class AirportGUI extends JPanel {
 	private void initializePassengerVehiclePanel(){
 
 		vehiclePanel = new PassengerVehiclePanel(controlTower);
-		vehiclePanel.setBounds(50, 300, 360, 200);
+		vehiclePanel.setBounds(700, 200, 160, 96);
 		vehiclePanel.setVisible(true);
 		vehiclePanel.setFocusable(true);
 		frame.add(vehiclePanel);
