@@ -39,7 +39,7 @@ public class AirportPanel extends JPanel {
 	private void drawBackground(Graphics g, Character[][] map) {
         for (int i = 0; i < map.length; ++i)
             for (int j = 0; j < map[i].length; ++j) {
-                g.drawImage(loadedImages.get("background"), j * 16, i * 16, null);
+                g.drawImage(loadedImages.get("background"), j * 32, i * 32, null);
             }
     }
 	
@@ -53,10 +53,10 @@ public class AirportPanel extends JPanel {
 	private void chooseImage(Graphics g, Character character, int i, int j) {
 		  switch(character) {	
 		  	case 'C':
-		  		g.drawImage(loadedImages.get("controlTower"), j * 16, i * 16, null);
+		  		//g.drawImage(loadedImages.get("controlTower"), j * 32, i * 32, null);
 		  		break;
 			case 'A':
-		  		g.drawImage(loadedImages.get("airplane"), j * 16, i * 16, null);
+		  		g.drawImage(loadedImages.get("airplane"), j * 32, i * 32, null);
 		  		break;
 		  }
 	}

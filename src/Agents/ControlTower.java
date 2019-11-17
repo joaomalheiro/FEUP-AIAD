@@ -56,9 +56,9 @@ public class ControlTower extends Agent {
 
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
-        this.passenger_vehicles_availability = new Vector<>();
-        map = new Character[20][20];
-        for (Character[] row : map)
+
+        map = new Character[11][20];
+        for (Character[] row: map)
             Arrays.fill(row, '*');
 
         vehicleMap = new Character[3][10];
