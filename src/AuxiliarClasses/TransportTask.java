@@ -1,6 +1,8 @@
 package AuxiliarClasses;
 
-public class TransportTask {
+import java.io.Serializable;
+
+public class TransportTask implements Serializable {
 
     private String airplane_name;
     private int passenger_number;

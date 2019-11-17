@@ -165,31 +165,6 @@ public class ControlTower extends Agent {
         }
     }
 
-        /* addBehaviour(new SubscriptionInitiator(this,
-                DFService.createSubscriptionMessage(this, getDefaultDF(),
-                        template, null)) {
-            protected void handleInform(ACLMessage inform) {
-                try {
-                    DFAgentDescription[] dfds =
-                            DFService.decodeNotification(inform.getContent());
-                    System.out.println("my class name is " + myAgent.getLocalName());
-                    ControlTower ct = (ControlTower) myAgent;
-                    for (DFAgentDescription dfd : dfds) {
-                        AID new_agent = dfd.getName();
-                        if (!ct.getPassenger_vehicles().contains(new_agent)) {
-                            ct.getPassenger_vehicles().add(new_agent);
-                            ct.getPassenger_vehicles_availability().add(new Pair<>(new_agent.getLocalName(), false));
-                            System.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
-                        }
-                    }
-
-                } catch (FIPAException fe) {
-                    fe.printStackTrace();
-                }
-            }
-        });*/
-
-
     public void pushAirplane(AirplaneInfo airplane) {
         int y = -1;
         for (AirplaneInfo value : airplanes) {
