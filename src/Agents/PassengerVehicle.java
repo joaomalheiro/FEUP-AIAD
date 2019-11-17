@@ -15,7 +15,6 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
 import jade.proto.ContractNetResponder;
-import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;

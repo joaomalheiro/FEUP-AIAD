@@ -131,13 +131,15 @@ public class ControlTower extends Agent {
         int i = 0, j = 0;
         System.out.println(this.passenger_vehicles.size());
         while (iterator.hasNext()) {
-            if(i > 4) {
+            System.out.println("" + i + " j- " + j);
+            if(i > 8) {
                 i = 0;
                 j++;
             }
 
-            this.vehicleMap[i][j] = 'A';
+            this.vehicleMap[j][i] = 'A';
             i = i + 2;
+            iterator.next();
         }
 
         gui.getVehiclePanel().repaint();
@@ -196,7 +198,7 @@ public class ControlTower extends Agent {
 
     public void pushAirplane(AirplaneInfo airplane) {
         int y= -1;
-        //initializePassengerGUI();
+        initializePassengerGUI();
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 y = value.getY();
