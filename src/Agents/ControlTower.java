@@ -4,6 +4,7 @@ import AgentBehaviours.AirplaneLanded;
 import AgentBehaviours.ListeningTowerBehaviour;
 import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
+import AuxiliarClasses.Pair;
 import gui.AirportGUI;
 import jade.core.*;
 import jade.domain.DFService;
@@ -42,6 +43,8 @@ public class ControlTower extends Agent{
 
     private Vector<AID> passenger_vehicles;
 
+    private Vector<Pair<String, Boolean>> passenger_vehicles_availability;
+
     private Character[][] map;
     private int currLine;
     private AirportGUI gui;
@@ -49,7 +52,7 @@ public class ControlTower extends Agent{
 
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
-
+        this.passenger_vehicles_availability = new Vector<>();
         map = new Character[20][20];
         for (Character[] row: map)
             Arrays.fill(row, '*');
@@ -61,6 +64,10 @@ public class ControlTower extends Agent{
     // **** GETTERS AND SETTERS ****
     public Vector<AID> getPassenger_vehicles() {
         return passenger_vehicles;
+    }
+
+    public Vector<Pair<String, Boolean>> getPassenger_vehicles_availability() {
+        return passenger_vehicles_availability;
     }
 
     public Character[][] getMap() {
@@ -96,9 +103,11 @@ public class ControlTower extends Agent{
         try {
             DFAgentDescription[] search_result = DFService.search(this, dfd);
 
-            for(DFAgentDescription vehicle : search_result)
+            for(DFAgentDescription vehicle : search_result) {
                 System.out.println(this.passenger_vehicles.add(vehicle.getName()));
-        } catch (FIPAException fe) {
+                this.passenger_vehicles_availability.add(new Pair<>(vehicle.getName().getLocalName(), false));
+            }
+            } catch (FIPAException fe) {
             fe.printStackTrace();
         }
     }
@@ -120,6 +129,7 @@ public class ControlTower extends Agent{
                         AID new_agent = dfd.getName();
                         if(!ct.getPassenger_vehicles().contains(new_agent)) {
                             ct.getPassenger_vehicles().add(new_agent);
+                            ct.getPassenger_vehicles_availability().add(new Pair<>(new_agent.getLocalName(), false));
                             System.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
                         }
                     }
