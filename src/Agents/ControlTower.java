@@ -56,6 +56,7 @@ public class ControlTower extends Agent {
 
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
+        this.passenger_vehicles_availability = new Vector<>();
 
         map = new Character[11][20];
         for (Character[] row: map)
@@ -195,7 +196,7 @@ public class ControlTower extends Agent {
 
     public void pushAirplane(AirplaneInfo airplane) {
         int y= -1;
-        initializePassengerGUI();
+        //initializePassengerGUI();
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 y = value.getY();
