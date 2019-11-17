@@ -25,6 +25,8 @@ public class ControlTower extends Agent{
                     return 1;
                 else if(a1.getFuel() < 5 && a1.getFuel() < a2.getFuel())
                     return 1;
+                else if (a1.getTimeWaiting() > 10 && a1.getTimeWaiting() > a2.getTimeWaiting())
+                    return 1;
                 else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d","")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d","")))
                     return 1;
                 else if (a1.getPassengers() > a2.getPassengers())
@@ -36,6 +38,10 @@ public class ControlTower extends Agent{
                 return 0;
         }
     };
+
+    public TreeSet<AirplaneInfo> getAirplanes() {
+        return airplanes;
+    }
 
     private TreeSet<AirplaneInfo> airplanes = new TreeSet<>(airplaneComparator);
     private Map<String, Integer> companyPriorities = new HashMap<>();

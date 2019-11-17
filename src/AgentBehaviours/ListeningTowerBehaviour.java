@@ -42,8 +42,18 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     }
 
     private void companyMessage(ACLMessage msg) {
-        String[] args = msg.getContent().split("Priority:");
-        controlTower.setPriority(args[0],Integer.parseInt(args[1]));
+        if(msg.getContent().contains("Priority:")){
+            String[] args = msg.getContent().split("Priority:");
+            controlTower.setPriority(args[0],Integer.parseInt(args[1]));
+        } else {
+           ACLMessage reply =  msg.createReply();
+           reply.setPerformative(ACLMessage.INFORM);
+           reply.addUserDefinedParameter("AGENT_TYPE", AgentType.CONTROLTOWER.toString());
+           reply.setContent(Integer.toString(controlTower.getAirplanes().size()));
+           controlTower.send(reply);
+        }
+
+
     }
 
 
