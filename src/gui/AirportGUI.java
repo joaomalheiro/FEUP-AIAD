@@ -3,7 +3,6 @@ package gui;
 import javax.swing.*;
 
 import Agents.ControlTower;
-import Agents.PassengerVehicle;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,24 +12,16 @@ public class AirportGUI extends JPanel {
 	private ControlTower controlTower;
 	private JFrame frame;
 	private AirportPanel panel;
-	private PassengerVehiclePanel vehiclePanel;
 
 	public AirportPanel getPanel() {
 		return panel;
 	}
-
-	public PassengerVehiclePanel getVehiclePanel() {
-		return vehiclePanel;
-	}
-
+	
 	public AirportGUI(ControlTower ct)  {
 		
 		controlTower = ct;
 		initializeFrame();
 		initializePanel();
-		initializePassengerVehiclePanel();
-
-		panel.repaint();
 		
 		this.controlTower.setGui(this);
 	}

@@ -37,6 +37,7 @@ public class AirportPanel extends JPanel {
     }
 	
 	private void drawBackground(Graphics g, Character[][] map) {
+		System.out.println(map.length);
         for (int i = 0; i < map.length; ++i)
             for (int j = 0; j < map[i].length; ++j) {
                 g.drawImage(loadedImages.get("background"), j * 32, i * 32, null);
