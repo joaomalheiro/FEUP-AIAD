@@ -39,6 +39,7 @@ public class JadeServiceLaucher {
 	
 	protected void launchGUI(ControlTower ct) {
 		AirportGUI airport = new AirportGUI(ct);
+		ct.initializePassengerGUI();
 	}
 
     protected ControlTower launchAgents() {
