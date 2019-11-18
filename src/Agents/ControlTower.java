@@ -310,8 +310,7 @@ public class ControlTower extends Agent {
         boolean found_free_tranport = false;
 
         for(int i = 0; i < this.passenger_vehicles_availability.size() && !found_free_tranport; i++) {
-            Pair<String, Boolean> tmp = new Pair<>();
-            tmp = this.passenger_vehicles_availability.get(i);
+            Pair<String, Boolean> tmp = this.passenger_vehicles_availability.get(i);
 
             // If true means that they are busy
             if(tmp.getR())

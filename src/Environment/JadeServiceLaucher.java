@@ -49,7 +49,6 @@ public class JadeServiceLaucher {
 
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
-			Company cp = new Company(1000, CompanyPriorityStrategy.Strategy.RANDOM);
 
 			PassengerVehicle pv = new PassengerVehicle();
 			agentContainer.acceptNewAgent("Vehicle1", pv).start();
@@ -57,7 +56,7 @@ public class JadeServiceLaucher {
 			PassengerVehicle pv2 = new PassengerVehicle();
 			agentContainer.acceptNewAgent("Vehicle2", pv2).start();
 
-			Company cp = new Company(1000);
+			Company cp = new Company(1000, CompanyPriorityStrategy.Strategy.RANDOM);
 			agentContainer.acceptNewAgent("Ryanair" , cp).start();
 			Company cp2 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
 			agentContainer.acceptNewAgent("TAP" , cp2).start();

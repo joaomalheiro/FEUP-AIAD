@@ -79,7 +79,7 @@ public class PassengerVehicle extends Agent {
         public void action() {
             ACLMessage msg = myAgent.receive();
 
-            if(current_task != null && msg != null && !msg.getContent().equals("Got your message!")) {
+            if(current_task == null && msg != null && !msg.getContent().equals("Got your message!")) {
                 try {
                     System.out.println(msg.getContentObject());
                 } catch (UnreadableException e) {
