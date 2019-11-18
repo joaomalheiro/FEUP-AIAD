@@ -29,18 +29,18 @@ public class ControlTower extends Agent {
         @Override
         public int compare(AirplaneInfo a1, AirplaneInfo a2) {
             if (!a1.getLocalName().equals(a2.getLocalName())) {
-                if (a1.getTimeToTower() > a2.getTimeToTower())
-                    return 1;
-                else if (a1.getFuel() < 5 && a1.getFuel() < a2.getFuel())
-                    return 1;
-                else if (a1.getTimeWaiting() > 10 && a1.getTimeWaiting() > a2.getTimeWaiting())
-                    return 1;
-                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d","")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d","")))
-                    return 1;
-                else if (a1.getPassengers() > a2.getPassengers())
-                    return 1;
-                else
+                if (a1.getTimeToTower() < a2.getTimeToTower())
                     return -1;
+                else if (a1.getFuel() < 5 && a1.getFuel() < a2.getFuel())
+                    return -1;
+                else if (a1.getTimeWaiting() > 10 && a1.getTimeWaiting() > a2.getTimeWaiting())
+                    return -1;
+                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d","")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d","")))
+                    return -1;
+                else if (a1.getPassengers() > a2.getPassengers())
+                    return -1;
+                else
+                    return 1;
             } else
                 return 0;
         }
@@ -219,11 +219,9 @@ public class ControlTower extends Agent {
                 } catch (FIPAException e) {
                     e.printStackTrace();
                 }
-
             }
 
             block();
-
         }
     }
 
@@ -245,12 +243,40 @@ public class ControlTower extends Agent {
 
         System.out.println();
 
+        Character wait;
+        switch (airplane.getTimeWaiting()) {
+            case 0:
+                wait = '0';
+                break;
+            case 1:
+                wait = '1';
+                break;
+            case 2:
+                wait = '2';
+                break;
+            case 3:
+                wait = '3';
+                break;
+            case 4:
+                wait = '4';
+                break;
+            case 5:
+                wait = '5';
+                break;
+            case 6:
+                wait = '6';
+                break;
+            default:
+                wait = '7';
+                break;
+        }
+
         if (y != -1) {
-            map[10 - airplane.getTimeToTower()][y] = 'A';
+            map[10 - airplane.getTimeToTower()][y] = wait;
             airplane.setX(10 - airplane.getTimeToTower());
             airplane.setY(y);
         } else {
-            map[10 - airplane.getTimeToTower()][currLine] = 'A';
+            map[10 - airplane.getTimeToTower()][currLine] = wait;
             airplane.setX(10 - airplane.getTimeToTower());
             airplane.setY(currLine);
 
@@ -275,6 +301,7 @@ public class ControlTower extends Agent {
             System.out.print(iterator.next()
                     + ", ");
         System.out.println();
+        System.out.println(companyPriorities);
     }
 
     public void landAirplane(AirplaneInfo airplane){
