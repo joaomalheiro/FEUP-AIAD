@@ -70,6 +70,7 @@ public class AssignTransportationTask extends OneShotBehaviour {
 
             // DEBUG
             System.out.println("CONTROLTOWER: Found an available vehicle");
+            ((ControlTower) myAgent).getPassenger_vehicles_availability().put(k, TransportVehicleAvailability.WAITING_REPLY);
             found = true;
             AID aux = new AID(k, AID.ISLOCALNAME);
             msg.addReceiver(aux);
