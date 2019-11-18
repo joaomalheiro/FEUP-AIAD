@@ -1,12 +1,10 @@
 package Environment;
 
 import AgentBehaviours.CompanyPriorityStrategy;
-import Agents.Airplane;
 import Agents.Company;
 import Agents.ControlTower;
 import Agents.PassengerVehicle;
 import gui.AirportGUI;
-import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -40,7 +38,7 @@ public class JadeServiceLaucher {
 	
 	protected void launchGUI(ControlTower ct) {
 		AirportGUI airport = new AirportGUI(ct);
-		ct.setAvaiability();
+		ct.setAvailability();
 	}
 
     protected ControlTower launchAgents(int scenario) {
@@ -50,7 +48,7 @@ public class JadeServiceLaucher {
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
 
-			for(int i = 0; i < 14; i++){
+			for(int i = 0; i < 2; i++){
 				PassengerVehicle pv = new PassengerVehicle(20 + i, 40, 10);
 				agentContainer.acceptNewAgent("Vehicle" + (i+1), pv).start();
 			}

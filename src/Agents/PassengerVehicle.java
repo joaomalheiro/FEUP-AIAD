@@ -1,5 +1,7 @@
 package Agents;
 
+import AgentBehaviours.ListeningPassVehicleBehaviour;
+import AgentBehaviours.TransportationTaskExecution;
 import AuxiliarClasses.AgentType;
 import AuxiliarClasses.TransportTask;
 import jade.core.AID;
@@ -8,27 +10,24 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
+
 import jade.lang.acl.UnreadableException;
-import jade.proto.ContractNetInitiator;
-import jade.proto.ContractNetResponder;
 
 import java.io.IOException;
-import java.util.Vector;
 
 public class PassengerVehicle extends Agent {
 
     private int id;
     private int capacity;
     private TransportTask current_task = null;
-    private int speed; //  meters/tick
-    // private int fuel;
 
-    public PassengerVehicle(int id, int capacity, int speed){
+    private boolean confirmed_task;
+    private int speed; //  meters/tick
+
+    public PassengerVehicle(int id, int capacity, int speed) {
         this.id = id;
         this.capacity = capacity;
         this.speed = speed;
@@ -51,44 +50,52 @@ public class PassengerVehicle extends Agent {
             fe.printStackTrace();
         }
 
-        addBehaviour(new ListeningPassengerVehicleBehaviour());
+        addBehaviour(new ListeningPassVehicleBehaviour(this));
+        addBehaviour(new TransportationTaskExecution(this, 250));
+
     }
 
     public void takeDown() {
         System.out.println(getLocalName() + ": done working.");
     }
 
-    private void executeTransportTask(TransportTask task) {
-        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-
-        try {
-            msg.setContentObject(task);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        addBehaviour(new TaskPreparation(this, msg));
+    public int getCapacity() {
+        return this.capacity;
     }
 
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    public TransportTask getTask() {
+        return this.current_task;
+    }
+
+    public void setCurrent_task(TransportTask t) {
+        this.current_task = t;
+    }
+
+    public boolean isConfirmed_task() {
+        return confirmed_task;
+    }
+
+    public void setConfirmed_task(boolean confirmed_task) {
+        this.confirmed_task = confirmed_task;
+    }
+
+
+/*
     private class ListeningPassengerVehicleBehaviour extends CyclicBehaviour {
 
         @Override
         public void action() {
             ACLMessage msg = myAgent.receive();
 
-            if(current_task == null && msg != null && !msg.getContent().equals("Got your message!")) {
-                try {
-                    System.out.println(msg.getContentObject());
-                } catch (UnreadableException e) {
-                    e.printStackTrace();
-                }
+            if (current_task == null && msg != null && !msg.getContent().equals("Got your message!")) {
 
-                if(msg.getPerformative() == ACLMessage.CFP)
-                    addBehaviour(new TaskHandler(myAgent, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-                else if(msg.getPerformative() == ACLMessage.REQUEST)
+                if (msg.getPerformative() == ACLMessage.REQUEST && msg.getSender().getLocalName().equals("ControlTower"))
                     handleNewTaskFromControlTower(msg);
-            }
-            else {
+            } else {
                 block();
             }
         }
@@ -96,44 +103,18 @@ public class PassengerVehicle extends Agent {
 
     private void handleNewTaskFromControlTower(ACLMessage msg) {
 
-        TransportTask task = null;
-        ACLMessage forward_request = null;
-        try {
-            task = (TransportTask) msg.getContentObject();
-        } catch (UnreadableException e) {
-            e.printStackTrace();
-        }
+        System.out.println("[T]" + this.getLocalName() + " - NEW Request" );
 
-        //When the vehicle can handle the request alone
-        if(task.getPassenger_number() <= this.getCapacity()) {
-            acceptNewIndividualTask(msg);
+        this.current_task = acceptNewIndividualTask(msg);
 
-            // TODO
-            // Only after receiving confirmation from CT, does it start working
-            this.current_task = acceptNewIndividualTask(msg);
+        // Task is going to be executed (each tick is 1 s = 1000 ms
+        addBehaviour(new ExecuteTask(this, 1000, current_task.getDrive_distance(), this.getSpeed()));
 
-            // Task is going to be executed (each tick is 1 s = 1000 ms
-            addBehaviour(new ExecuteTask(this, 1000, current_task.getDrive_distance(), this.getSpeed()));
+        // DEBUG
+        // System.out.println("ACCEPTED: " + this.current_task.getAirplane_name() + " By" + this.getLocalName());
+        return;
 
-            // DEBUG
-            System.out.println("ACCEPTED: " + this.current_task.getAirplane_name() + " By" + this.getLocalName());
-            return;
-        }
 
-        else {
-            try {
-                task = (TransportTask) msg.getContentObject();
-                forward_request = new ACLMessage(ACLMessage.CFP);
-                task.addVehicleToTask(this.getLocalName(), this.getCapacity());
-                forward_request.setContentObject(task);
-            } catch (UnreadableException | IOException e) {
-                e.printStackTrace();
-            }
-
-            // DEBUG
-            System.out.println("FORWARDED: " + task.getAirplane_name() + " By" + this.getLocalName());
-            addBehaviour(new TaskPreparation(this, forward_request));
-        }
     }
 
     private TransportTask acceptNewIndividualTask(ACLMessage msg) {
@@ -154,7 +135,64 @@ public class PassengerVehicle extends Agent {
         return task_aux;
     }
 
+    private class ExecuteTask extends TickerBehaviour {
 
+        private int no_total_ticks;
+
+        public ExecuteTask(Agent a, long period, int distance, int speed) {
+            super(a, period);
+            no_total_ticks = distance / speed;
+        }
+
+        @Override
+        protected void onTick() {
+            no_total_ticks--;
+
+            //System.out.println("TICKS :: " + no_total_ticks + " - " + myAgent.getLocalName());
+            if (no_total_ticks <= 0) {
+                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+                msg.setSender(myAgent.getAID());
+                msg.addUserDefinedParameter("AGENT_TYPE", AgentType.PASSENGER_VEHICLE.toString());
+                msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
+                msg.setContent("Finished my task");
+                myAgent.send(msg);
+                //System.out.println("Finish THE task " + myAgent.getLocalName());
+                stop();
+            }
+        }
+    }*/
+
+
+
+
+        /* else {
+            try {
+                task = (TransportTask) msg.getContentObject();
+                forward_request = new ACLMessage(ACLMessage.CFP);
+                task.addVehicleToTask(this.getLocalName(), this.getCapacity());
+                forward_request.setContentObject(task);
+            } catch (UnreadableException | IOException e) {
+                e.printStackTrace();
+            }
+
+            // DEBUG
+            System.out.println("FORWARDED: " + task.getAirplane_name() + " By" + this.getLocalName());
+            addBehaviour(new TaskPreparation(this, forward_request));
+        } */
+
+    /* private void executeTransportTask(TransportTask task) {
+        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+
+        try {
+            msg.setContentObject(task);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        addBehaviour(new TaskPreparation(this, msg));
+    } */
+
+    /*
     private class TaskPreparation extends ContractNetInitiator {
 
         public TaskPreparation(Agent a, ACLMessage cfp) {
@@ -206,7 +244,7 @@ public class PassengerVehicle extends Agent {
             ACLMessage reply = cfp.createReply();
             reply.setPerformative(ACLMessage.PROPOSE);
             try {
-                reply.setContentObject(/* Need to return the evaluator response*/null);
+                reply.setContentObject(Need to return the evaluator responsenull);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -231,68 +269,7 @@ public class PassengerVehicle extends Agent {
 
             return res;
         }
-    }
-
-    private class ExecuteTask extends TickerBehaviour {
-
-        private int no_total_ticks;
-        public ExecuteTask(Agent a, long period, int distance, int speed) {
-            super(a, period);
-            no_total_ticks = distance / speed;
-        }
-
-        @Override
-        protected void onTick() {
-            no_total_ticks--;
-
-            System.out.println("TICKS :: " + no_total_ticks);
-            if(no_total_ticks <= 0){
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                msg.setSender(myAgent.getAID());
-                msg.addUserDefinedParameter("AGENT_TYPE", AgentType.PASSENGER_VEHICLE.toString());
-                msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
-                msg.setContent("Finished my task");
-                myAgent.send(msg);
-                stop();
-            }
-        }
+    }*/
 
 
-
-    }
-
-    private AID[] searchDF(String service) {
-        DFAgentDescription dfd = new DFAgentDescription();
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType(service);
-        dfd.addServices(sd);
-
-        SearchConstraints ALL = new SearchConstraints();
-        ALL.setMaxResults(new Long(-1));
-
-        try {
-            DFAgentDescription[] result = DFService.search(this, dfd, ALL);
-            AID[] agents = new AID[result.length];
-            for (int i = 0; i < result.length; i++)
-                agents[i] = result[i].getName();
-            return agents;
-
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public int getID() {
-        return this.id;
-    }
-
-    public int getCapacity() {
-        return this.capacity;
-    }
-
-    public int getSpeed() {
-        return this.speed;
-    }
 }

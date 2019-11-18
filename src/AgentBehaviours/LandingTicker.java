@@ -17,4 +17,5 @@ public class LandingTicker extends TickerBehaviour {
         if(ct.getTransports_available_counter() > 0 && !ct.getAirplanes().isEmpty() && ct.getAirplanes().first().getTimeToTower() == 0)
             ct.landAirplane(ct.getAirplanes().first());
     }
+
 }

@@ -41,7 +41,7 @@ public class Company extends Agent {
 
     public void changeFunds(int amount){
         funds += amount;
-        System.out.println("Company: " + this.getLocalName() + " Funds: " + funds);
+        // System.out.println("Company: " + this.getLocalName() + " Funds: " + funds);
     }
 
     public void landAirplane(AirplaneInfo airplane,int valuePerPassenger,int timeWaited) {

@@ -1,6 +1,7 @@
 package Agents;
 
 import AgentBehaviours.AirplaneLanded;
+import AgentBehaviours.AssignTransportationTask;
 import AgentBehaviours.LandingTicker;
 import AgentBehaviours.ListeningTowerBehaviour;
 import AuxiliarClasses.*;
@@ -15,9 +16,7 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.MessageTemplate;
-import jade.proto.SubscriptionInitiator;
 
-import javax.naming.ldap.Control;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +35,7 @@ public class ControlTower extends Agent {
                     return -1;
                 else if (a1.getTimeWaiting() > 10 && a1.getTimeWaiting() > a2.getTimeWaiting())
                     return -1;
-                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d","")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d","")))
+                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d", "")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d", "")))
                     return -1;
                 else if (a1.getPassengers() > a2.getPassengers())
                     return -1;
@@ -62,9 +61,13 @@ public class ControlTower extends Agent {
         return transports_available_counter;
     }
 
-    public void increment_transport_counter() {transports_available_counter++;}
+    public void increment_transport_counter() {
+        transports_available_counter++;
+    }
 
-    public void decrement_transport_counter() {transports_available_counter--;}
+    public void decrement_transport_counter() {
+        transports_available_counter--;
+    }
 
     private int transports_available_counter;
 
@@ -80,11 +83,11 @@ public class ControlTower extends Agent {
         this.transports_available_counter = 0;
 
         map = new Character[11][20];
-        for (Character[] row: map)
+        for (Character[] row : map)
             Arrays.fill(row, '*');
 
         vehicleMap = new Character[3][10];
-        for (Character[] row: vehicleMap)
+        for (Character[] row : vehicleMap)
             Arrays.fill(row, '*');
 
         map[9][0] = 'C';
@@ -122,9 +125,7 @@ public class ControlTower extends Agent {
         initialPassengerVehicleSearch();
         subscribePassengerVehicleAgent();
 
-        //TESTING
-        addBehaviour(new PrintDF(this, 5000));
-        //ENDTESTING
+        //addBehaviour(new PrintDF(this, 5000));
 
         addBehaviour(new ListeningTowerBehaviour(this));
         addBehaviour(new LandingTicker(this, 500));
@@ -171,7 +172,7 @@ public class ControlTower extends Agent {
         }
     }
 
-    public void setAvaiability() {
+    public void setAvailability() {
         int i = 0, j = 0;
 
         for (TransportVehicleAvailability value : passenger_vehicles_availability.values()) {
@@ -199,7 +200,7 @@ public class ControlTower extends Agent {
     private void subscribePassengerVehicleAgent() {
         DFAgentDescription template = passengerVehicleDFAgentDescriptorCreator();
         SearchConstraints sc = new SearchConstraints();
-        sc.setMaxResults(new Long(1));
+        sc.setMaxResults(1L);
 
         send(DFService.createSubscriptionMessage(this, getDefaultDF(),
                 template, sc));
@@ -223,7 +224,6 @@ public class ControlTower extends Agent {
 
                 try {
                     DFAgentDescription[] dfds = DFService.decodeNotification(msg.getContent());
-
                     if (dfds.length > 0) {
                         for (DFAgentDescription dfd : dfds) {
                             AID new_agent = dfd.getName();
@@ -231,7 +231,6 @@ public class ControlTower extends Agent {
                                 ct.getPassenger_vehicles().add(new_agent);
                                 ct.getPassenger_vehicles_availability().put(new_agent.getLocalName(), TransportVehicleAvailability.FREE);
                                 increment_transport_counter();
-                                //ystem.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
                             }
                         }
                     }
@@ -245,8 +244,8 @@ public class ControlTower extends Agent {
     }
 
     public void pushAirplane(AirplaneInfo airplane) {
-        int y= -1;
-        setAvaiability();
+        int y = -1;
+        setAvailability();
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 y = value.getY();
@@ -314,18 +313,18 @@ public class ControlTower extends Agent {
 
         // Loop over the TreeSet values
         // and print the values
-        System.out.print("TreeSet: ");
-        while (iterator.hasNext())
-            System.out.print(iterator.next()
-                    + ", ");
-        System.out.println();
-        System.out.println(companyPriorities);
+        // System.out.print("TreeSet: ");
+        // while (iterator.hasNext())
+        //   System.out.print(iterator.next()
+        //           + ", ");
+        // System.out.println();
+        //  System.out.println(companyPriorities);
 
-        
+
     }
 
-    public void landAirplane(AirplaneInfo airplane){
-        addBehaviour(new AirplaneLanded(airplane,10 - companyPriorities.get(airplane.getLocalName().replaceAll("\\d",""))));
+    public void landAirplane(AirplaneInfo airplane) {
+        addBehaviour(new AirplaneLanded(airplane, 10 - companyPriorities.get(airplane.getLocalName().replaceAll("\\d", ""))));
 
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
@@ -334,56 +333,19 @@ public class ControlTower extends Agent {
             }
         }
 
-        // Creating a transport task (if returns false, call method again)
-        boolean found = false;
-        while(!found)
-            found = transmitNewTransportTask(airplane);
+        // Creating a transport task
+       addBehaviour(new AssignTransportationTask(this, airplane, -1));
 
-        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
+        airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()));
     }
 
     public void setPriority(String companyName, int priority) {
         companyPriorities.put(companyName, priority);
     }
 
-    // Returns true if the message was sent to a free guy, false other wise
-    // If it was not sent, it must be repeated until ir gets it
-    public boolean transmitNewTransportTask(AirplaneInfo info) {
-        TransportTask task = new TransportTask(info.getLocalName(), info.getPassengers(), 30);
-
-        ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-        msg.addUserDefinedParameter("AGENT_TYPE", AgentType.CONTROLTOWER.toString());
-        try {
-            msg.setContentObject(task);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        boolean found_free_transport = false;
-
-        for (Map.Entry<String, TransportVehicleAvailability> entry : passenger_vehicles_availability.entrySet()) {
-            String key = entry.getKey();
-            TransportVehicleAvailability value = entry.getValue();
-
-            if(!value.equals(TransportVehicleAvailability.FREE))
-                continue;
-
-            AID aux = new AID(key, AID.ISLOCALNAME);
-            msg.addReceiver(aux);
-            found_free_transport = true;
-            passenger_vehicles_availability.remove(key);
-            passenger_vehicles_availability.put(key, TransportVehicleAvailability.WAITING_REPLY);
-            break;
-        }
-
-        if(found_free_transport)
-            this.send(msg);
-
-        return found_free_transport;
-    }
-
     private AID[] getAllElementsDf() {
-        DFAgentDescription dfd = new DFAgentDescription();;
+        DFAgentDescription dfd = new DFAgentDescription();
+
 
         SearchConstraints ALL = new SearchConstraints();
         ALL.setMaxResults(new Long(-1));
@@ -404,17 +366,17 @@ public class ControlTower extends Agent {
 
 
     /* *** TESTING METHODS **** */
-    private void printAllDfElements(){
+    private void printAllDfElements() {
         AID[] tmp = getAllElementsDf();
-        for(int i = 0; i < tmp.length; i++)
+        for (int i = 0; i < tmp.length; i++)
             //System.out.println("DF [" + i + "]: " + tmp[i].getLocalName());
 
-        System.out.println("--- ---");
+            System.out.println("--- ---");
 
     }
 
     private void printAllElementsAvailability() {
-        for(Map.Entry<String, TransportVehicleAvailability> vehicle : passenger_vehicles_availability.entrySet()){
+        for (Map.Entry<String, TransportVehicleAvailability> vehicle : passenger_vehicles_availability.entrySet()) {
             String k = vehicle.getKey();
             TransportVehicleAvailability v = vehicle.getValue();
             //System.out.println("Availability: " + k + "  |  " + v);
@@ -429,11 +391,14 @@ public class ControlTower extends Agent {
 
         @Override
         protected void onTick() {
-            //printAllDfElements();
+            printAllDfElements();
             printAllElementsAvailability();
         }
     }
+
+
 }
+
 
 
 

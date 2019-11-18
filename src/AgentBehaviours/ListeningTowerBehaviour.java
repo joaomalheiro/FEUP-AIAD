@@ -1,12 +1,10 @@
 package AgentBehaviours;
 
-import Agents.Airplane;
 import Agents.ControlTower;
 import AuxiliarClasses.*;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import jade.util.leap.Properties;
 
 public class ListeningTowerBehaviour extends CyclicBehaviour {
 
@@ -67,14 +65,25 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     }
 
     private void passengerVehicleMessage(ACLMessage msg) {
+
         if (msg != null && !msg.getContent().equals("Got your message!")) {
 
             if(msg.getPerformative() == ACLMessage.INFORM) {
+                System.out.println("CONTROLTOWER: Received INFORM from " + msg.getSender().getLocalName());
                 controlTower.getPassenger_vehicles_availability().put(msg.getSender().getLocalName(), TransportVehicleAvailability.FREE);
                 controlTower.increment_transport_counter();
-
             }
             else if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
+                System.out.println("CONTROLTOWER: Received ACCEPT_PROPOSAL from " + msg.getSender().getLocalName());
+
+                ACLMessage reply = msg.createReply();
+                reply.setPerformative(ACLMessage.CONFIRM);
+                reply.clearUserDefinedParameter("AGENT_TYPE");
+                reply.addUserDefinedParameter("AGENT_TYPE", "CONTROLTOWER");
+                reply.setContent("Confirmed");
+                myAgent.send(reply);
+                System.out.println("CONTROLTOWER: Sent CONFIRM to " + msg.getSender().getLocalName());
+
                 try {
                     TransportTask task = (TransportTask) msg.getContentObject();
                     for(Pair<String, Integer> vehicle : task.getAssigned_passenger_vehicles()){
@@ -85,12 +94,10 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
                 } catch (UnreadableException e) {
                     e.printStackTrace();
                 }
-
-
             }
         }
 
-        controlTower.setAvaiability();
+        controlTower.setAvailability();
     }
 }
 
