@@ -49,7 +49,7 @@ public class Company extends Agent {
        changeFunds(airplaneProfit);
        airplanes.removeIf(ap -> ap.getId() == airplane.getId());
 
-       if(strategy.equals(CompanyPriorityStrategy.Strategy.MEDIUM)){
+       if(strategy.equals(CompanyPriorityStrategy.Strategy.SMART)){
            int currentPriority = (valuePerPassenger - 10) * -1;
            if(timeWaited == 0 && currentPriority > 0){
                sendMessagePriority(currentPriority--);
