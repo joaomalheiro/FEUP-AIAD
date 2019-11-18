@@ -19,7 +19,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     public void action() {
         ACLMessage msg = controlTower.receive();
 
-        if (msg != null && msg.getContent() != null && !msg.getContent().equals("Got your message!")) {
+        if (msg != null && !msg.getContent().equals("Got your message!")) {
             Object tmp = msg.getAllUserDefinedParameters().get("AGENT_TYPE");
             if(tmp != null) {
                 switch (tmp.toString()) {
@@ -72,16 +72,9 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
         if (msg != null && !msg.getContent().equals("Got your message!")) {
 
             if(msg.getPerformative() == ACLMessage.INFORM) {
-                // TODO
-                // When it ends the work
-                // Receive a confirmation of availability
                 controlTower.getPassenger_vehicles_availability().put(msg.getSender().getLocalName(), TransportVehicleAvailability.FREE);
             }
             else if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
-                // TODO
-                // When it accepts the job
-                // Make the vehicle busy in CT
-                // Reply with ok to the transportation
                 try {
                     TransportTask task = (TransportTask) msg.getContentObject();
                     for(Pair<String, Integer> vehicle : task.getAssigned_passenger_vehicles()){

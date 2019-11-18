@@ -409,7 +409,7 @@ public class ControlTower extends Agent {
 
         @Override
         protected void onTick() {
-            printAllDfElements();
+            //printAllDfElements();
             printAllElementsAvailability();
         }
     }

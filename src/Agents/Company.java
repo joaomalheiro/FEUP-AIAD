@@ -8,7 +8,6 @@ import AuxiliarClasses.AirplaneInfo;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
-import jade.util.leap.ArrayList;
 
 import java.util.HashSet;
 import java.util.Set;
