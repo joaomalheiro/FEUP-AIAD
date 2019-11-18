@@ -168,7 +168,7 @@ public class ControlTower extends Agent {
             if (value == TransportVehicleAvailability.BUSY) {
                 this.vehicleMap[j][i] = '7';
             } else if (value == TransportVehicleAvailability.WAITING_REPLY) {
-                this.vehicleMap[j][i] = '4';
+                this.vehicleMap[j][i] = '3';
             } else if (value == TransportVehicleAvailability.FREE) {
                 this.vehicleMap[j][i] = '0';
             }
