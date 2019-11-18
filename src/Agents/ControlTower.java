@@ -17,7 +17,6 @@ import jade.lang.acl.ACLMessage;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.MessageTemplate;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -63,6 +62,7 @@ public class ControlTower extends Agent {
 
     public void increment_transport_counter() {
         transports_available_counter++;
+
     }
 
     public void decrement_transport_counter() {
@@ -162,8 +162,8 @@ public class ControlTower extends Agent {
             DFAgentDescription[] search_result = DFService.search(this, dfd);
 
             for (DFAgentDescription vehicle : search_result) {
-                //System.out.println(this.passenger_vehicles.add(vehicle.getName()));
                 this.passenger_vehicles_availability.put(vehicle.getName().getLocalName(), TransportVehicleAvailability.FREE);
+                this.passenger_vehicles.add(vehicle.getName());
                 increment_transport_counter();
             }
 

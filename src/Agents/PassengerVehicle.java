@@ -51,7 +51,7 @@ public class PassengerVehicle extends Agent {
         }
 
         addBehaviour(new ListeningPassVehicleBehaviour(this));
-        addBehaviour(new TransportationTaskExecution(this, 250));
+        addBehaviour(new TransportationTaskExecution(this, 500));
 
     }
 

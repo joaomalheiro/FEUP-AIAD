@@ -8,6 +8,8 @@ import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
 
+import static java.lang.Math.round;
+
 public class TransportationTaskExecution extends TickerBehaviour {
 
     private boolean executing_task = false;
@@ -22,8 +24,8 @@ public class TransportationTaskExecution extends TickerBehaviour {
     protected void onTick() {
 
         if(((PassengerVehicle) myAgent).getTask() != null && task_time == 0) {
-            task_time = ((PassengerVehicle) myAgent).getTask().getDrive_distance() / ((PassengerVehicle) myAgent).getSpeed();
-            System.out.println( myAgent.getLocalName() + ": Calculated task time for " + ((PassengerVehicle) myAgent).getTask().getAirplane_name() );
+            task_time = round(((PassengerVehicle) myAgent).getTask().getDrive_distance() / ((PassengerVehicle) myAgent).getSpeed() * (1000 / getPeriod())) ;
+            System.out.println( myAgent.getLocalName() + ": Calculated task time " + task_time + "ticks for " + ((PassengerVehicle) myAgent).getTask().getAirplane_name() );
         }
 
         if(((PassengerVehicle) myAgent).getTask() != null && ((PassengerVehicle) myAgent).isConfirmed_task()){
