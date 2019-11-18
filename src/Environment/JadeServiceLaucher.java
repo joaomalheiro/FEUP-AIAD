@@ -52,6 +52,9 @@ public class JadeServiceLaucher {
 			PassengerVehicle pv = new PassengerVehicle();
 			agentContainer.acceptNewAgent("Vehicle1", pv).start();
 
+			PassengerVehicle pv2 = new PassengerVehicle();
+			agentContainer.acceptNewAgent("Vehicle2", pv2).start();
+
 			Company cp = new Company(1000);
 			agentContainer.acceptNewAgent("Ryanair" , cp).start();
 			Company cp2 = new Company(1000);

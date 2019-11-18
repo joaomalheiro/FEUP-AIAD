@@ -47,4 +47,9 @@ public class TransportTask implements Serializable {
     public void setEnd_time(double end_time) {
         this.end_time = end_time;
     }
+
+    @Override
+    public String toString() {
+        return "TASK FOR: " + airplane_name + " with " + passenger_number + " passengers, at " + drive_distance + "m drive distance.";
+    }
 }

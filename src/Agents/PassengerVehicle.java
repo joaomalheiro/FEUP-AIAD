@@ -4,9 +4,9 @@ import AuxiliarClasses.AgentType;
 import AuxiliarClasses.TransportTask;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
@@ -15,7 +15,6 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
 import jade.proto.ContractNetResponder;
-import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +54,7 @@ public class PassengerVehicle extends Agent {
             fe.printStackTrace();
         }
 
+        addBehaviour(new ListeningPassengerVehicleBehaviour());
     }
 
     public void takeDown() {
@@ -70,23 +70,54 @@ public class PassengerVehicle extends Agent {
             e.printStackTrace();
         }
 
-        addBehaviour(new TaskGenerator(this, msg, searchDF(AgentType.PASSENGER_VEHICLE.toString())));
+        addBehaviour(new TaskPreparation(this, msg));
     }
 
-    private class TaskGenerator extends ContractNetInitiator {
+    private class ListeningPassengerVehicleBehaviour extends CyclicBehaviour {
 
-        private ArrayList<AID> vehicles;
-        public TaskGenerator(Agent a, ACLMessage cfp, AID[] vehicle_list) {
+        @Override
+        public void action() {
+            ACLMessage msg = myAgent.receive();
+
+            if(current_task != null && msg != null && !msg.getContent().equals("Got your message!")) {
+                try {
+                    System.out.println(msg.getContentObject());
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                block();
+            }
+        }
+    }
+
+    private void handleNewTask(TransportTask task) {
+
+        if(task.getPassenger_number() <= this.getCapacity())
+            return; //Send accept message back to the control tower
+
+        // Ask help to other ones
+    }
+
+    private void acceptNewTask() {
+
+
+    }
+
+
+    private class TaskPreparation extends ContractNetInitiator {
+
+        public TaskPreparation(Agent a, ACLMessage cfp) {
             super(a, cfp);
-            ArrayList<AID> vehicles = new ArrayList<AID>(Arrays.asList(vehicle_list)); //new ArrayList is only needed if you absolutely need an ArrayList
         }
 
         @Override
         protected Vector prepareCfps(ACLMessage cfp) {
             Vector<ACLMessage> vec = new Vector<>();
+            AID[] aids = searchDF("PASSENGER_VEHICLE");
 
-
-            for (AID aid : vehicles)
+            for (AID aid : aids)
                 cfp.addReceiver(aid);
 
             vec.add(cfp);

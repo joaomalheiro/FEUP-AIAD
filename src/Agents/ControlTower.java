@@ -5,8 +5,10 @@ import AgentBehaviours.ListeningTowerBehaviour;
 import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
 import AuxiliarClasses.Pair;
+import AuxiliarClasses.TransportTask;
 import gui.AirportGUI;
 import jade.core.*;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.SearchConstraints;
@@ -18,6 +20,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.SubscriptionInitiator;
 
 import javax.naming.ldap.Control;
+import java.io.IOException;
 import java.util.*;
 
 public class ControlTower extends Agent {
@@ -97,9 +100,31 @@ public class ControlTower extends Agent {
 
     public void setup() {
         System.out.println("New control tower");
+        DFregistring();
         initialPassengerVehicleSearch();
         subscribePassengerVehicleAgent();
+
+        //TESTING
+        addBehaviour(new PrintDF(this, 5000));
+        //ENDTESTING
+
         addBehaviour(new ListeningTowerBehaviour(this));
+    }
+
+    private void DFregistring() {
+        // Register in DF
+        DFAgentDescription dfd = new DFAgentDescription();
+        dfd.setName(getAID());
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType(AgentType.CONTROLTOWER.toString());
+        sd.setName(getLocalName());
+        dfd.addServices(sd);
+
+        try {
+            DFService.register(this, dfd);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
     }
 
     private DFAgentDescription passengerVehicleDFAgentDescriptorCreator() {
@@ -254,11 +279,88 @@ public class ControlTower extends Agent {
             }
         }
 
+        transmitNewTransportTask(airplane);
         airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
     }
 
     public void setPriority(String companyName, int priority) {
         companyPriorities.put(companyName, priority);
+    }
+
+    // Returns true if the message was sent to a free guy, false other wise
+    private boolean transmitNewTransportTask(AirplaneInfo info) {
+        TransportTask task = new TransportTask(info.getLocalName(), info.getPassengers(), 30);
+
+        ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+        msg.addUserDefinedParameter("AGENT_TYPE", AgentType.CONTROLTOWER.toString());
+        try {
+            msg.setContentObject(task);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        boolean found_free_tranport = false;
+
+        for(int i = 0; i < this.passenger_vehicles_availability.size() && !found_free_tranport; i++) {
+            Pair<String, Boolean> tmp = new Pair<>();
+            tmp = this.passenger_vehicles_availability.get(i);
+
+            // If true means that they are busy
+            if(tmp.getR())
+                continue;
+
+            AID aux = new AID(tmp.getL(), AID.ISLOCALNAME);
+            msg.addReceiver(aux);
+            found_free_tranport = true;
+        }
+
+        if(found_free_tranport)
+            this.send(msg);
+
+        return found_free_tranport;
+    }
+
+    private AID[] getAllElementsDf() {
+        DFAgentDescription dfd = new DFAgentDescription();;
+
+        SearchConstraints ALL = new SearchConstraints();
+        ALL.setMaxResults(new Long(-1));
+
+        try {
+            DFAgentDescription[] result = DFService.search(this, dfd, ALL);
+            AID[] agents = new AID[result.length];
+            for (int i = 0; i < result.length; i++)
+                agents[i] = result[i].getName();
+            return agents;
+
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    /* *** TESTING METHODS **** */
+    private void printAllDfElements(){
+        AID[] tmp = getAllElementsDf();
+        for(int i = 0; i < tmp.length; i++)
+            System.out.println("DF [" + i + "]: " + tmp[i].getLocalName());
+
+        System.out.println("--- ---");
+
+    }
+
+    private class PrintDF extends TickerBehaviour {
+
+        public PrintDF(Agent a, long period) {
+            super(a, period);
+        }
+
+        @Override
+        protected void onTick() {
+            printAllDfElements();
+        }
     }
 }
 
