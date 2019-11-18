@@ -39,16 +39,17 @@ public class ListeningCompanyBehaviour extends CyclicBehaviour {
 
     private void controlTowerMessage(ACLMessage msg) {
         int nPlanes = Integer.parseInt(msg.getContent());
+        System.out.println("NUMBER OF PLANES " + nPlanes);
 
-        if(nPlanes < 15){
+        if(nPlanes < 8){
             company.sendMessagePriority(0);
-        } if (nPlanes >= 15 && nPlanes < 30){
+        } else if (nPlanes >= 8 && nPlanes < 15){
             company.sendMessagePriority(1);
-        } if (nPlanes >= 30 && nPlanes < 50){
+        } else if (nPlanes >= 15 && nPlanes < 20){
             company.sendMessagePriority(2);
-        } if (nPlanes >= 50 && nPlanes < 70){
+        } else if (nPlanes >= 20 && nPlanes < 25){
             company.sendMessagePriority(3);
-        } if (nPlanes >= 70 && nPlanes < 100){
+        } else if (nPlanes >= 25 && nPlanes < 30){
             company.sendMessagePriority(4);
         } else {
             company.sendMessagePriority(5);
