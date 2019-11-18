@@ -143,6 +143,7 @@ public class PassengerVehicle extends Agent {
             task_aux.addVehicleToTask(this.getAID().getLocalName(), this.getCapacity());
             reply.setContentObject(task_aux);
             reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            reply.addUserDefinedParameter("AGENT_TYPE", AgentType.PASSENGER_VEHICLE.toString());
             this.send(reply);
         } catch (UnreadableException | IOException e) {
             e.printStackTrace();
