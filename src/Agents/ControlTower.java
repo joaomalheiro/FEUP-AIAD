@@ -295,15 +295,7 @@ public class ControlTower extends Agent {
         gui.getVehiclePanel().setFocusable(true);
         gui.getVehiclePanel().requestFocusInWindow();
 
-
-        // Loop over the TreeSet values
-        // and print the values
-        System.out.print("TreeSet: ");
-        while (iterator.hasNext())
-            System.out.print(iterator.next()
-                    + ", ");
-        System.out.println();
-        System.out.println(companyPriorities);
+        
     }
 
     public void landAirplane(AirplaneInfo airplane){
