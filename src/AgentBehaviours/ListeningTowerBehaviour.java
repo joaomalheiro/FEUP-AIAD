@@ -2,10 +2,10 @@ package AgentBehaviours;
 
 import Agents.Airplane;
 import Agents.ControlTower;
-import AuxiliarClasses.AgentType;
-import AuxiliarClasses.AirplaneInfo;
+import AuxiliarClasses.*;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import jade.util.leap.Properties;
 
 public class ListeningTowerBehaviour extends CyclicBehaviour {
@@ -71,7 +71,33 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     }
 
     private void passengerVehicleMessage(ACLMessage msg) {
-        System.out.println("VEHICLE MESSAGE: " + msg.getContent());
+
+        if (msg != null && !msg.getContent().equals("Got your message!")) {
+
+            if(msg.getPerformative() == ACLMessage.INFORM) {
+                // TODO
+                // When it ends the work
+                // Receive a confirmation of availability
+                controlTower.getPassenger_vehicles_availability().put(msg.getSender().getLocalName(), TransportVehicleAvailability.FREE);
+            }
+            else if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
+                // TODO
+                // When it accepts the job
+                // Make the vehicle busy in CT
+                // Reply with ok to the transportation
+                try {
+                    TransportTask task = (TransportTask) msg.getContentObject();
+                    for(Pair<String, Integer> vehicle : task.getAssigned_passenger_vehicles()){
+                        controlTower.getPassenger_vehicles_availability().put(vehicle.getL(), TransportVehicleAvailability.BUSY);
+                    }
+
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
     }
 }
 
