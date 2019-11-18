@@ -1,6 +1,7 @@
 package Agents;
 
 import AuxiliarClasses.AgentType;
+import AuxiliarClasses.Pair;
 import AuxiliarClasses.TransportTask;
 import jade.core.AID;
 import jade.core.Agent;
@@ -29,16 +30,13 @@ public class PassengerVehicle extends Agent {
     // private int speed;
     // private int fuel;
 
+    public PassengerVehicle(int id, int capacity){
+        this.id = id;
+        this.capacity = capacity;
+    }
+
     public void setup() {
         System.out.println("New Agents.PassengerVehicle!");
-
-        Object[] args = getArguments();
-        if (args != null && args.length > 0) {
-            id = Integer.parseInt(args[0].toString());
-            capacity = Integer.parseInt(args[1].toString());
-            // speed = Integer.parseInt(args[2].toString());
-            // fuel = Integer.parseInt(args[3].toString());
-        }
 
         // Register in DF
         DFAgentDescription dfd = new DFAgentDescription();
@@ -85,6 +83,11 @@ public class PassengerVehicle extends Agent {
                 } catch (UnreadableException e) {
                     e.printStackTrace();
                 }
+
+                if(msg.getPerformative() == ACLMessage.CFP)
+                    addBehaviour(new TaskHandler(myAgent, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+                else if(msg.getPerformative() == ACLMessage.REQUEST)
+                    handleNewTaskFromControlTower(msg);
             }
             else {
                 block();
@@ -92,17 +95,53 @@ public class PassengerVehicle extends Agent {
         }
     }
 
-    private void handleNewTask(TransportTask task) {
+    private void handleNewTaskFromControlTower(ACLMessage msg) {
 
-        if(task.getPassenger_number() <= this.getCapacity())
-            return; //Send accept message back to the control tower
+        TransportTask task = null;
+        ACLMessage forward_request = null;
+        try {
+            task = (TransportTask) msg.getContentObject();
+        } catch (UnreadableException e) {
+            e.printStackTrace();
+        }
 
-        // Ask help to other ones
+        //When the vehicle can handle the request alone
+        if(task.getPassenger_number() <= this.getCapacity()) {
+            acceptNewIndividualTask(msg);
+            return;
+        }
+
+        else {
+            try {
+                task = (TransportTask) msg.getContentObject();
+                forward_request = new ACLMessage(ACLMessage.CFP);
+                task.addVehicleToTask(this.getLocalName(), this.getCapacity());
+                forward_request.setContentObject(task);
+            } catch (UnreadableException | IOException e) {
+                e.printStackTrace();
+            }
+            // DEBUG
+            System.out.println("FORWARDED: " + task.getAirplane_name() + " By" + this.getLocalName());
+            addBehaviour(new TaskPreparation(this, forward_request));
+        }
     }
 
-    private void acceptNewTask() {
+    private void acceptNewIndividualTask(ACLMessage msg) {
 
+        ACLMessage reply = msg.createReply();
+        try {
+            TransportTask task_aux = (TransportTask) msg.getContentObject();
+            task_aux.addVehicleToTask(this.getAID().getLocalName(), this.getCapacity());
+            reply.setContentObject(task_aux);
+            reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            this.send(reply);
 
+            this.current_task = task_aux;
+            // DEBUG
+            System.out.println("ACCEPTED: " + task_aux.getAirplane_name() + " By" + this.getLocalName());
+        } catch (UnreadableException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -117,8 +156,12 @@ public class PassengerVehicle extends Agent {
             Vector<ACLMessage> vec = new Vector<>();
             AID[] aids = searchDF("PASSENGER_VEHICLE");
 
-            for (AID aid : aids)
+            for (AID aid : aids) {
+                if(aid.getLocalName() == myAgent.getLocalName())
+                    continue;
+
                 cfp.addReceiver(aid);
+            }
 
             vec.add(cfp);
 
@@ -127,6 +170,7 @@ public class PassengerVehicle extends Agent {
 
         @Override
         protected void handleAllResponses(Vector responses, Vector acceptances) {
+            // TODO
             super.handleAllResponses(responses, acceptances);
         }
     }

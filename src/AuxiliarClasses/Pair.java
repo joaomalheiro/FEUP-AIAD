@@ -1,6 +1,8 @@
 package AuxiliarClasses;
 
-public class Pair<L,R> {
+import java.io.Serializable;
+
+public class Pair<L,R> implements Serializable {
     private L l;
     private R r;
     public Pair(){}

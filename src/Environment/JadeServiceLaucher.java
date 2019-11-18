@@ -50,10 +50,10 @@ public class JadeServiceLaucher {
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
 
-			PassengerVehicle pv = new PassengerVehicle();
+			PassengerVehicle pv = new PassengerVehicle(20, 40);
 			agentContainer.acceptNewAgent("Vehicle1", pv).start();
 
-			PassengerVehicle pv2 = new PassengerVehicle();
+			PassengerVehicle pv2 = new PassengerVehicle(21, 40);
 			agentContainer.acceptNewAgent("Vehicle2", pv2).start();
 
 			Company cp = new Company(1000, CompanyPriorityStrategy.Strategy.RANDOM);

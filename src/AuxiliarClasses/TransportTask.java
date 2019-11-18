@@ -1,12 +1,14 @@
 package AuxiliarClasses;
 
 import java.io.Serializable;
+import java.util.Vector;
 
 public class TransportTask implements Serializable {
 
     private String airplane_name;
     private int passenger_number;
     private int drive_distance;
+    private Vector<Pair<String, Integer>> assigned_passenger_vehicles;
     private double start_time = -1;
     private double end_time = -1;
 
@@ -14,6 +16,7 @@ public class TransportTask implements Serializable {
         this.airplane_name = airplane_name;
         this.passenger_number = passenger_number;
         this.drive_distance = drive_distance;
+        assigned_passenger_vehicles = new Vector<>();
     }
 
     public String getAirplane_name() {
@@ -46,6 +49,14 @@ public class TransportTask implements Serializable {
 
     public void setEnd_time(double end_time) {
         this.end_time = end_time;
+    }
+
+    public Vector<Pair<String, Integer>> getAssigned_passenger_vehicles() {
+        return assigned_passenger_vehicles;
+    }
+
+    public void addVehicleToTask(String vehicle_id, int capacity) {
+        assigned_passenger_vehicles.add(new Pair<>(vehicle_id, capacity));
     }
 
     @Override
