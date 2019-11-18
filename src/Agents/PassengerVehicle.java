@@ -245,11 +245,13 @@ public class PassengerVehicle extends Agent {
         protected void onTick() {
             no_total_ticks--;
 
+            System.out.println("TICKS :: " + no_total_ticks);
             if(no_total_ticks <= 0){
                 ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                 msg.setSender(myAgent.getAID());
                 msg.addUserDefinedParameter("AGENT_TYPE", AgentType.PASSENGER_VEHICLE.toString());
                 msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
+                msg.setContent("Finished my task");
                 myAgent.send(msg);
                 stop();
             }
