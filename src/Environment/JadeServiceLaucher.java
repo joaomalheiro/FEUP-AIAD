@@ -50,17 +50,10 @@ public class JadeServiceLaucher {
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
 
-			PassengerVehicle pv = new PassengerVehicle(20, 40, 10);
-			agentContainer.acceptNewAgent("Vehicle1", pv).start();
-
-			PassengerVehicle pv2 = new PassengerVehicle(21, 40, 10);
-			agentContainer.acceptNewAgent("Vehicle2", pv2).start();
-
-			PassengerVehicle pv3 = new PassengerVehicle(22, 40, 10);
-			agentContainer.acceptNewAgent("Vehicle3", pv3).start();
-
-			PassengerVehicle pv4 = new PassengerVehicle(23, 40, 10);
-			agentContainer.acceptNewAgent("Vehicle4", pv4).start();
+			for(int i = 0; i < 14; i++){
+				PassengerVehicle pv = new PassengerVehicle(20 + i, 40, 10);
+				agentContainer.acceptNewAgent("Vehicle" + (i+1), pv).start();
+			}
 
 			switch (scenario){
 				case 1:

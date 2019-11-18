@@ -19,7 +19,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     public void action() {
         ACLMessage msg = controlTower.receive();
 
-        if (msg != null && !msg.getContent().equals("Got your message!")) {
+        if (msg != null && msg.getContent() != null && !msg.getContent().equals("Got your message!")) {
             Object tmp = msg.getAllUserDefinedParameters().get("AGENT_TYPE");
             if(tmp != null) {
                 switch (tmp.toString()) {
