@@ -22,9 +22,9 @@ public class PassengerVehiclePanel extends JPanel {
         loadedImages = new HashMap<>();
         try {
             loadedImages.put("backgroundPassenger", ImageIO.read(new File("images/backgroundPassenger.png")));
-            loadedImages.put("0", ImageIO.read(new File("images/available.png")));
-            loadedImages.put("3", ImageIO.read(new File("images/available3.png")));
-            loadedImages.put("7", ImageIO.read(new File("images/available7.png")));
+            loadedImages.put("0", ImageIO.read(new File("images/airplane.png")));
+            loadedImages.put("3", ImageIO.read(new File("images/airplane3.png")));
+            loadedImages.put("7", ImageIO.read(new File("images/airplane7.png")));
         } catch(IOException e) {
             e.printStackTrace();
         }
