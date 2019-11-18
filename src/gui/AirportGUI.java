@@ -14,6 +14,8 @@ public class AirportGUI extends JPanel {
 	private JFrame frame;
 	private AirportPanel panel;
 	private PassengerVehiclePanel vehiclePanel;
+	private JLabel planeLabel;
+	private JLabel passengerLabel;
 
 	public AirportPanel getPanel() {
 		return panel;
@@ -27,12 +29,26 @@ public class AirportGUI extends JPanel {
 		
 		controlTower = ct;
 		initializeFrame();
+		initializeLabels();
 		initializePanel();
 		initializePassengerVehiclePanel();
 
 		panel.repaint();
 		
 		this.controlTower.setGui(this);
+	}
+
+	private void initializeLabels() {
+
+		planeLabel = new JLabel("Airplanes landing");
+		planeLabel.setBounds(300, 450, 200, 20);
+		planeLabel.setForeground(Color.white);
+		frame.add(planeLabel);
+
+		passengerLabel = new JLabel("Passenger Transport");
+		passengerLabel.setBounds(800, 450, 200, 20);
+		passengerLabel.setForeground(Color.white);
+		frame.add(passengerLabel);
 	}
 	
 	private void initializeFrame() {
