@@ -24,13 +24,16 @@ public class CompanyPriorityStrategy extends TickerBehaviour {
         super(company,period);
         this.company = company;
         this.type = type;
+        if(type.equals(Strategy.SMART)){
+            company.sendMessagePriority(0);
+        }
     }
 
     @Override
     protected void onTick() {
         switch (type){
             case MEDIUM:
-                handleSmart();
+                handleMedium();
                 break;
             case RANDOM:
                 handleRandom();
@@ -43,7 +46,7 @@ public class CompanyPriorityStrategy extends TickerBehaviour {
 
     }
 
-    private void handleSmart() {
+    private void handleMedium() {
         jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
         msg.addUserDefinedParameter("AGENT_TYPE", AgentType.COMPANY.toString());
         msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
