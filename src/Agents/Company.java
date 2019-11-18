@@ -41,13 +41,12 @@ public class Company extends Agent {
 
     public void changeFunds(int amount){
         funds += amount;
-        System.out.println("Funds: " + funds);
+        System.out.println("Company: " + this.getLocalName() + " Funds: " + funds);
     }
 
     public void landAirplane(AirplaneInfo airplane,int valuePerPassenger,int timeWaited) {
        int airplaneProfit = airplane.getPassengers() * valuePerPassenger - airplane.getTimeWaiting() * airplane.getPassengers();
        changeFunds(airplaneProfit);
-       System.out.println("Profit " + (airplaneProfit - (airplane.getCapacity() * 5)));
        airplanes.removeIf(ap -> ap.getId() == airplane.getId());
 
        if(strategy.equals(CompanyPriorityStrategy.Strategy.MEDIUM)){

@@ -39,7 +39,7 @@ public class ListeningCompanyBehaviour extends CyclicBehaviour {
 
     private void controlTowerMessage(ACLMessage msg) {
         int nPlanes = Integer.parseInt(msg.getContent());
-        System.out.println("NUMBER OF PLANES " + nPlanes);
+        //System.out.println("NUMBER OF PLANES " + nPlanes);
 
         if(nPlanes < 8){
             company.sendMessagePriority(0);

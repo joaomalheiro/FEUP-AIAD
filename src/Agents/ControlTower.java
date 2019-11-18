@@ -30,6 +30,8 @@ public class ControlTower extends Agent {
             if (!a1.getLocalName().equals(a2.getLocalName())) {
                 if (a1.getTimeToTower() < a2.getTimeToTower())
                     return -1;
+                else if (a1.getTimeToTower() > a2.getTimeToTower())
+                    return 1;
                 else if (a1.getFuel() < 5 && a1.getFuel() < a2.getFuel())
                     return -1;
                 else if (a1.getTimeWaiting() > 10 && a1.getTimeWaiting() > a2.getTimeWaiting())
@@ -159,7 +161,7 @@ public class ControlTower extends Agent {
             DFAgentDescription[] search_result = DFService.search(this, dfd);
 
             for (DFAgentDescription vehicle : search_result) {
-                System.out.println(this.passenger_vehicles.add(vehicle.getName()));
+                //System.out.println(this.passenger_vehicles.add(vehicle.getName()));
                 this.passenger_vehicles_availability.put(vehicle.getName().getLocalName(), TransportVehicleAvailability.FREE);
                 increment_transport_counter();
             }
@@ -229,7 +231,7 @@ public class ControlTower extends Agent {
                                 ct.getPassenger_vehicles().add(new_agent);
                                 ct.getPassenger_vehicles_availability().put(new_agent.getLocalName(), TransportVehicleAvailability.FREE);
                                 increment_transport_counter();
-                                System.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
+                                //ystem.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
                             }
                         }
                     }
@@ -258,7 +260,7 @@ public class ControlTower extends Agent {
 
         Iterator<AirplaneInfo> iterator = airplanes.iterator();
 
-        System.out.println();
+        //System.out.println();
 
         Character wait;
         switch (airplane.getTimeWaiting()) {
@@ -309,6 +311,15 @@ public class ControlTower extends Agent {
         gui.getVehiclePanel().repaint();
         gui.getVehiclePanel().setFocusable(true);
         gui.getVehiclePanel().requestFocusInWindow();
+
+        // Loop over the TreeSet values
+        // and print the values
+        System.out.print("TreeSet: ");
+        while (iterator.hasNext())
+            System.out.print(iterator.next()
+                    + ", ");
+        System.out.println();
+        System.out.println(companyPriorities);
 
         
     }
@@ -396,7 +407,7 @@ public class ControlTower extends Agent {
     private void printAllDfElements(){
         AID[] tmp = getAllElementsDf();
         for(int i = 0; i < tmp.length; i++)
-            System.out.println("DF [" + i + "]: " + tmp[i].getLocalName());
+            //System.out.println("DF [" + i + "]: " + tmp[i].getLocalName());
 
         System.out.println("--- ---");
 
@@ -406,7 +417,7 @@ public class ControlTower extends Agent {
         for(Map.Entry<String, TransportVehicleAvailability> vehicle : passenger_vehicles_availability.entrySet()){
             String k = vehicle.getKey();
             TransportVehicleAvailability v = vehicle.getValue();
-            System.out.println("Availability: " + k + "  |  " + v);
+            //System.out.println("Availability: " + k + "  |  " + v);
         }
     }
 

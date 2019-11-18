@@ -26,7 +26,7 @@ public class CompanyAirplane extends TickerBehaviour {
         }
 
         company.addAirplane(ap);
-        System.out.println(ap);
+       // System.out.println(ap);
     }
 
     private Airplane generateRandomPlane(){
