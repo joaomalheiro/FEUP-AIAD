@@ -349,6 +349,7 @@ public class ControlTower extends Agent {
             found_free_transport = true;
             passenger_vehicles_availability.remove(key);
             passenger_vehicles_availability.put(key, TransportVehicleAvailability.WAITING_REPLY);
+            break;
         }
 
         if(found_free_transport)
@@ -388,6 +389,14 @@ public class ControlTower extends Agent {
 
     }
 
+    private void printAllElementsAvailability() {
+        for(Map.Entry<String, TransportVehicleAvailability> vehicle : passenger_vehicles_availability.entrySet()){
+            String k = vehicle.getKey();
+            TransportVehicleAvailability v = vehicle.getValue();
+            System.out.println("Availability: " + k + "  |  " + v);
+        }
+    }
+
     private class PrintDF extends TickerBehaviour {
 
         public PrintDF(Agent a, long period) {
@@ -397,6 +406,7 @@ public class ControlTower extends Agent {
         @Override
         protected void onTick() {
             printAllDfElements();
+            printAllElementsAvailability();
         }
     }
 }

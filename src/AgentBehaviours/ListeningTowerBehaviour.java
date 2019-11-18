@@ -23,7 +23,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
             Object tmp = msg.getAllUserDefinedParameters().get("AGENT_TYPE");
             if(tmp != null) {
                 switch (tmp.toString()) {
-                    case "PASSENGERVEHICLE":
+                    case "PASSENGER_VEHICLE":
                         passengerVehicleMessage(msg);
                         break;
                     case "AIRPLANE":
@@ -33,7 +33,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
                         companyMessage(msg);
                         break;
                     default:
-                        System.out.println("ListeningTowerBehaviour - ERROR: agent type unknown");
+                        System.out.println("ListeningTowerBehaviour - ERROR: agent type " + tmp.toString() + " unknown");
                 }
             }
         } else {
@@ -71,7 +71,6 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     }
 
     private void passengerVehicleMessage(ACLMessage msg) {
-
         if (msg != null && !msg.getContent().equals("Got your message!")) {
 
             if(msg.getPerformative() == ACLMessage.INFORM) {

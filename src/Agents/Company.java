@@ -29,7 +29,7 @@ public class Company extends Agent {
     Set<AirplaneInfo> airplanes = new HashSet<>();
 
     public void setup(){
-        addBehaviour(new CompanyAirplane(this, 8000));
+        addBehaviour(new CompanyAirplane(this, 30000));
         addBehaviour(new ListeningCompanyBehaviour(this));
         addBehaviour(new CompanyPriorityStrategy(this, strategy ,5000));
     }
