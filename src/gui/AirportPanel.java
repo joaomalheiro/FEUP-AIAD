@@ -22,7 +22,15 @@ public class AirportPanel extends JPanel {
         loadedImages = new HashMap<>();
         try {
             loadedImages.put("background", ImageIO.read(new File("images/background.png")));
-            loadedImages.put("airplane", ImageIO.read(new File("images/airplane.png")));
+            loadedImages.put("0", ImageIO.read(new File("images/airplane.png")));
+            loadedImages.put("1", ImageIO.read(new File("images/airplane1.png")));
+            loadedImages.put("2", ImageIO.read(new File("images/airplane2.png")));
+            loadedImages.put("3", ImageIO.read(new File("images/airplane3.png")));
+            loadedImages.put("4", ImageIO.read(new File("images/airplane4.png")));
+            loadedImages.put("5", ImageIO.read(new File("images/airplane5.png")));
+            loadedImages.put("6", ImageIO.read(new File("images/airplane6.png")));
+            loadedImages.put("7", ImageIO.read(new File("images/airplane7.png")));
+
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -51,12 +59,30 @@ public class AirportPanel extends JPanel {
 	
 	private void chooseImage(Graphics g, Character character, int i, int j) {
 		  switch(character) {	
-		  	case 'C':
-		  		//g.drawImage(loadedImages.get("controlTower"), j * 32, i * 32, null);
+		  	case '7':
+                g.drawImage(loadedImages.get("7"), j * 32, i * 32, null);
 		  		break;
-			case 'A':
-		  		g.drawImage(loadedImages.get("airplane"), j * 32, i * 32, null);
-		  		break;
-		  }
+            case '0':
+                g.drawImage(loadedImages.get("0"), j * 32, i * 32, null);
+                break;
+            case '1':
+                g.drawImage(loadedImages.get("1"), j * 32, i * 32, null);
+                break;
+            case '2':
+                g.drawImage(loadedImages.get("2"), j * 32, i * 32, null);
+                break;
+            case '3':
+                g.drawImage(loadedImages.get("3"), j * 32, i * 32, null);
+                break;
+            case '4':
+                g.drawImage(loadedImages.get("4"), j * 32, i * 32, null);
+                break;
+            case '5':
+                g.drawImage(loadedImages.get("5"), j * 32, i * 32, null);
+                break;
+            case '6':
+                g.drawImage(loadedImages.get("6"), j * 32, i * 32, null);
+                break;
+          }
 	}
 }

@@ -220,12 +220,40 @@ public class ControlTower extends Agent {
 
         System.out.println();
 
+        Character wait;
+        switch (airplane.getTimeWaiting()) {
+            case 0:
+                wait = '0';
+                break;
+            case 1:
+                wait = '1';
+                break;
+            case 2:
+                wait = '2';
+                break;
+            case 3:
+                wait = '3';
+                break;
+            case 4:
+                wait = '4';
+                break;
+            case 5:
+                wait = '5';
+                break;
+            case 6:
+                wait = '6';
+                break;
+            default:
+                wait = '7';
+                break;
+        }
+
         if (y != -1) {
-            map[10 - airplane.getTimeToTower()][y] = 'A';
+            map[10 - airplane.getTimeToTower()][y] = wait;
             airplane.setX(10 - airplane.getTimeToTower());
             airplane.setY(y);
         } else {
-            map[10 - airplane.getTimeToTower()][currLine] = 'A';
+            map[10 - airplane.getTimeToTower()][currLine] = wait;
             airplane.setX(10 - airplane.getTimeToTower());
             airplane.setY(currLine);
 
