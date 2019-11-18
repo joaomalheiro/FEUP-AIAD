@@ -1,5 +1,6 @@
 package Environment;
 
+import AgentBehaviours.CompanyPriorityStrategy;
 import Agents.Airplane;
 import Agents.Company;
 import Agents.ControlTower;
@@ -39,7 +40,7 @@ public class JadeServiceLaucher {
 	
 	protected void launchGUI(ControlTower ct) {
 		AirportGUI airport = new AirportGUI(ct);
-		//ct.initializePassengerGUI();
+		ct.initializePassengerGUI();
 	}
 
     protected ControlTower launchAgents() {
@@ -48,6 +49,7 @@ public class JadeServiceLaucher {
 
 			ControlTower controlTower = new ControlTower();
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
+			Company cp = new Company(1000, CompanyPriorityStrategy.Strategy.RANDOM);
 
 			PassengerVehicle pv = new PassengerVehicle();
 			agentContainer.acceptNewAgent("Vehicle1", pv).start();
@@ -57,7 +59,7 @@ public class JadeServiceLaucher {
 
 			Company cp = new Company(1000);
 			agentContainer.acceptNewAgent("Ryanair" , cp).start();
-			Company cp2 = new Company(1000);
+			Company cp2 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
 			agentContainer.acceptNewAgent("TAP" , cp2).start();
 
 			return controlTower;

@@ -22,7 +22,6 @@ public class AirportPanel extends JPanel {
         loadedImages = new HashMap<>();
         try {
             loadedImages.put("background", ImageIO.read(new File("images/background.png")));
-            loadedImages.put("controlTower", ImageIO.read(new File("images/controltower.png")));
             loadedImages.put("airplane", ImageIO.read(new File("images/airplane.png")));
         } catch(IOException e) {
             e.printStackTrace();

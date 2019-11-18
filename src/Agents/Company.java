@@ -3,8 +3,11 @@ package Agents;
 import AgentBehaviours.CompanyAirplane;
 import AgentBehaviours.CompanyPriorityStrategy;
 import AgentBehaviours.ListeningCompanyBehaviour;
+import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
+import jade.core.AID;
 import jade.core.Agent;
+import jade.lang.acl.ACLMessage;
 import jade.util.leap.ArrayList;
 
 import java.util.HashSet;
@@ -12,9 +15,11 @@ import java.util.Set;
 
 public class Company extends Agent {
     private int funds;
+    private CompanyPriorityStrategy.Strategy strategy;
 
-    public Company(int funds) {
+    public Company(int funds, CompanyPriorityStrategy.Strategy strategy) {
         this.funds = funds;
+        this.strategy = strategy;
     }
 
     public Set<AirplaneInfo> getAirplanes() {
@@ -40,11 +45,30 @@ public class Company extends Agent {
         System.out.println("Funds: " + funds);
     }
 
-    public void landAirplane(AirplaneInfo airplane,int valuePerPassenger) {
+    public void landAirplane(AirplaneInfo airplane,int valuePerPassenger,int timeWaited) {
        int airplaneProfit = airplane.getPassengers() * valuePerPassenger - airplane.getTimeWaiting() * airplane.getPassengers();
        changeFunds(airplaneProfit);
        System.out.println("Profit " + (airplaneProfit - (airplane.getCapacity() * 5)));
        airplanes.removeIf(ap -> ap.getId() == airplane.getId());
+
+       if(strategy.equals(CompanyPriorityStrategy.Strategy.MEDIUM)){
+           int currentPriority = (valuePerPassenger - 10) * -1;
+           if(timeWaited == 0 && currentPriority > 0){
+               sendMessagePriority(currentPriority--);
+           } else if(timeWaited > 0 && currentPriority < 5) {
+               sendMessagePriority(currentPriority++);
+           }
+       }
+    }
+
+    public void sendMessagePriority(int priority) {
+        jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
+        msg.addUserDefinedParameter("AGENT_TYPE", AgentType.COMPANY.toString());
+        msg.addReceiver(new AID("ControlTower", AID.ISLOCALNAME));
+        msg.setLanguage("English");
+        msg.setOntology("Weather-forecast-ontology");
+        msg.setContent(this.getLocalName() + "Priority:" + priority);
+        this.send(msg);
     }
 
 

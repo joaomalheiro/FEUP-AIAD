@@ -33,7 +33,9 @@ public class ControlTower extends Agent {
                     return 1;
                 else if (a1.getFuel() < 5 && a1.getFuel() < a2.getFuel())
                     return 1;
-                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d", "")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d", "")))
+                else if (a1.getTimeWaiting() > 10 && a1.getTimeWaiting() > a2.getTimeWaiting())
+                    return 1;
+                else if (companyPriorities.get(a1.getLocalName().replaceAll("\\d","")) > companyPriorities.get(a2.getLocalName().replaceAll("\\d","")))
                     return 1;
                 else if (a1.getPassengers() > a2.getPassengers())
                     return 1;
@@ -43,6 +45,10 @@ public class ControlTower extends Agent {
                 return 0;
         }
     };
+
+    public TreeSet<AirplaneInfo> getAirplanes() {
+        return airplanes;
+    }
 
     private TreeSet<AirplaneInfo> airplanes = new TreeSet<>(airplaneComparator);
     private Map<String, Integer> companyPriorities = new HashMap<>();
@@ -156,13 +162,15 @@ public class ControlTower extends Agent {
         int i = 0, j = 0;
         System.out.println(this.passenger_vehicles.size());
         while (iterator.hasNext()) {
-            if(i > 4) {
+            System.out.println("" + i + " j- " + j);
+            if(i > 8) {
                 i = 0;
                 j++;
             }
 
-            this.vehicleMap[i][j] = 'A';
+            this.vehicleMap[j][i] = 'A';
             i = i + 2;
+            iterator.next();
         }
 
         gui.getVehiclePanel().repaint();
@@ -221,7 +229,7 @@ public class ControlTower extends Agent {
 
     public void pushAirplane(AirplaneInfo airplane) {
         int y= -1;
-        //initializePassengerGUI();
+        initializePassengerGUI();
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 y = value.getY();

@@ -22,8 +22,8 @@ public class PassengerVehiclePanel extends JPanel {
         loadedImages = new HashMap<>();
         try {
             loadedImages.put("backgroundPassenger", ImageIO.read(new File("images/backgroundPassenger.png")));
-            loadedImages.put("controlTower", ImageIO.read(new File("images/controltower.png")));
-            loadedImages.put("airplane", ImageIO.read(new File("images/airplane.png")));
+            loadedImages.put("busy", ImageIO.read(new File("images/busy.png")));
+            loadedImages.put("available", ImageIO.read(new File("images/available.png")));
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -52,11 +52,11 @@ public class PassengerVehiclePanel extends JPanel {
 
     private void chooseImage(Graphics g, Character character, int i, int j) {
         switch(character) {
-            case 'C':
-                g.drawImage(loadedImages.get("controlTower"), j * 16, i * 16, null);
+            case 'B':
+                g.drawImage(loadedImages.get("busy"), j * 32, i * 32, null);
                 break;
             case 'A':
-                g.drawImage(loadedImages.get("airplane"), j * 16, i * 16, null);
+                g.drawImage(loadedImages.get("available"), j * 32, i * 32, null);
                 break;
         }
     }

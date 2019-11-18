@@ -1,6 +1,7 @@
 package AgentBehaviours;
 
 import Agents.Airplane;
+import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;
@@ -17,6 +18,7 @@ public class AirplaneLanded extends OneShotBehaviour {
     }
     public void action() {
         jade.lang.acl.ACLMessage msg = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
+        msg.addUserDefinedParameter("AGENT_TYPE", AgentType.AIRPLANE.toString());
         msg.addReceiver(new AID(airplane.getLocalName(), AID.ISLOCALNAME));
         msg.setLanguage("English");
         msg.setOntology("Weather-forecast-ontology");
@@ -24,6 +26,7 @@ public class AirplaneLanded extends OneShotBehaviour {
         myAgent.send(msg);
 
         jade.lang.acl.ACLMessage msgCompany = new jade.lang.acl.ACLMessage(ACLMessage.INFORM);
+        msgCompany.addUserDefinedParameter("AGENT_TYPE", AgentType.AIRPLANE.toString());
         msgCompany.addReceiver(new AID(airplane.getLocalName().replaceAll("\\d",""), AID.ISLOCALNAME));
         msgCompany.setLanguage("English");
         msgCompany.setOntology("Weather-forecast-ontology");
