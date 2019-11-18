@@ -108,6 +108,13 @@ public class PassengerVehicle extends Agent {
         //When the vehicle can handle the request alone
         if(task.getPassenger_number() <= this.getCapacity()) {
             acceptNewIndividualTask(msg);
+
+            // TODO
+            // Only after receiving confirmation from CT, does it start working
+            this.current_task = acceptNewIndividualTask(msg);
+
+            // DEBUG
+            System.out.println("ACCEPTED: " + this.current_task.getAirplane_name() + " By" + this.getLocalName());
             return;
         }
 
@@ -120,28 +127,28 @@ public class PassengerVehicle extends Agent {
             } catch (UnreadableException | IOException e) {
                 e.printStackTrace();
             }
+
             // DEBUG
             System.out.println("FORWARDED: " + task.getAirplane_name() + " By" + this.getLocalName());
             addBehaviour(new TaskPreparation(this, forward_request));
         }
     }
 
-    private void acceptNewIndividualTask(ACLMessage msg) {
+    private TransportTask acceptNewIndividualTask(ACLMessage msg) {
 
         ACLMessage reply = msg.createReply();
+        TransportTask task_aux = null;
         try {
-            TransportTask task_aux = (TransportTask) msg.getContentObject();
+            task_aux = (TransportTask) msg.getContentObject();
             task_aux.addVehicleToTask(this.getAID().getLocalName(), this.getCapacity());
             reply.setContentObject(task_aux);
             reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
             this.send(reply);
-
-            this.current_task = task_aux;
-            // DEBUG
-            System.out.println("ACCEPTED: " + task_aux.getAirplane_name() + " By" + this.getLocalName());
         } catch (UnreadableException | IOException e) {
             e.printStackTrace();
         }
+
+        return task_aux;
     }
 
 
@@ -222,6 +229,10 @@ public class PassengerVehicle extends Agent {
             return res;
         }
     }
+
+    // TODO
+    // Make task execution function
+    // Terminate task and send terminus confirmation to CT with the AID reference on the "Sender"
 
     private AID[] searchDF(String service) {
         DFAgentDescription dfd = new DFAgentDescription();

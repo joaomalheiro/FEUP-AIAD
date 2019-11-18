@@ -2,10 +2,7 @@ package Agents;
 
 import AgentBehaviours.AirplaneLanded;
 import AgentBehaviours.ListeningTowerBehaviour;
-import AuxiliarClasses.AgentType;
-import AuxiliarClasses.AirplaneInfo;
-import AuxiliarClasses.Pair;
-import AuxiliarClasses.TransportTask;
+import AuxiliarClasses.*;
 import gui.AirportGUI;
 import jade.core.*;
 import jade.core.behaviours.TickerBehaviour;
@@ -22,6 +19,7 @@ import jade.proto.SubscriptionInitiator;
 import javax.naming.ldap.Control;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ControlTower extends Agent {
 
@@ -55,7 +53,7 @@ public class ControlTower extends Agent {
 
     private Vector<AID> passenger_vehicles;
 
-    private Vector<Pair<String, Boolean>> passenger_vehicles_availability;
+    private ConcurrentHashMap<String, TransportVehicleAvailability> passenger_vehicles_availability;
 
     private Character[][] map;
     private Character[][] vehicleMap;
@@ -65,7 +63,7 @@ public class ControlTower extends Agent {
 
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
-        this.passenger_vehicles_availability = new Vector<>();
+        this.passenger_vehicles_availability = new ConcurrentHashMap<>();
 
         map = new Character[11][20];
         for (Character[] row: map)
@@ -84,7 +82,7 @@ public class ControlTower extends Agent {
         return passenger_vehicles;
     }
 
-    public Vector<Pair<String, Boolean>> getPassenger_vehicles_availability() {
+    public ConcurrentHashMap<String, TransportVehicleAvailability> getPassenger_vehicles_availability() {
         return passenger_vehicles_availability;
     }
 
@@ -149,7 +147,7 @@ public class ControlTower extends Agent {
 
             for (DFAgentDescription vehicle : search_result) {
                 System.out.println(this.passenger_vehicles.add(vehicle.getName()));
-                this.passenger_vehicles_availability.add(new Pair<>(vehicle.getName().getLocalName(), false));
+                this.passenger_vehicles_availability.put(vehicle.getName().getLocalName(), TransportVehicleAvailability.FREE);
             }
 
         } catch (FIPAException fe) {
@@ -211,7 +209,7 @@ public class ControlTower extends Agent {
                             AID new_agent = dfd.getName();
                             if (!ct.getPassenger_vehicles().contains(new_agent)) {
                                 ct.getPassenger_vehicles().add(new_agent);
-                                ct.getPassenger_vehicles_availability().add(new Pair<>(new_agent.getLocalName(), false));
+                                ct.getPassenger_vehicles_availability().put(new_agent.getLocalName(), TransportVehicleAvailability.FREE);
                                 System.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
                             }
                         }
@@ -314,7 +312,9 @@ public class ControlTower extends Agent {
             }
         }
 
+        // Creating a transport task (if returns false, call method again)
         transmitNewTransportTask(airplane);
+
         airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
     }
 
@@ -323,6 +323,7 @@ public class ControlTower extends Agent {
     }
 
     // Returns true if the message was sent to a free guy, false other wise
+    // If it was not sent, it must be repeated until ir gets it
     private boolean transmitNewTransportTask(AirplaneInfo info) {
         TransportTask task = new TransportTask(info.getLocalName(), info.getPassengers(), 30);
 
@@ -334,24 +335,26 @@ public class ControlTower extends Agent {
             e.printStackTrace();
         }
 
-        boolean found_free_tranport = false;
+        boolean found_free_transport = false;
 
-        for(int i = 0; i < this.passenger_vehicles_availability.size() && !found_free_tranport; i++) {
-            Pair<String, Boolean> tmp = this.passenger_vehicles_availability.get(i);
+        for (Map.Entry<String, TransportVehicleAvailability> entry : passenger_vehicles_availability.entrySet()) {
+            String key = entry.getKey();
+            TransportVehicleAvailability value = entry.getValue();
 
-            // If true means that they are busy
-            if(tmp.getR())
+            if(!value.equals(TransportVehicleAvailability.FREE))
                 continue;
 
-            AID aux = new AID(tmp.getL(), AID.ISLOCALNAME);
+            AID aux = new AID(key, AID.ISLOCALNAME);
             msg.addReceiver(aux);
-            found_free_tranport = true;
+            found_free_transport = true;
+            passenger_vehicles_availability.remove(key);
+            passenger_vehicles_availability.put(key, TransportVehicleAvailability.WAITING_REPLY);
         }
 
-        if(found_free_tranport)
+        if(found_free_transport)
             this.send(msg);
 
-        return found_free_tranport;
+        return found_free_transport;
     }
 
     private AID[] getAllElementsDf() {
