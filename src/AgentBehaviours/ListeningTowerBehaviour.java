@@ -71,12 +71,15 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
             if(msg.getPerformative() == ACLMessage.INFORM) {
                 controlTower.getPassenger_vehicles_availability().put(msg.getSender().getLocalName(), TransportVehicleAvailability.FREE);
+                controlTower.increment_transport_counter();
+
             }
             else if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
                 try {
                     TransportTask task = (TransportTask) msg.getContentObject();
                     for(Pair<String, Integer> vehicle : task.getAssigned_passenger_vehicles()){
                         controlTower.getPassenger_vehicles_availability().put(vehicle.getL(), TransportVehicleAvailability.BUSY);
+                        controlTower.decrement_transport_counter();
                     }
 
                 } catch (UnreadableException e) {

@@ -1,6 +1,7 @@
 package Agents;
 
 import AgentBehaviours.AirplaneLanded;
+import AgentBehaviours.LandingTicker;
 import AgentBehaviours.ListeningTowerBehaviour;
 import AuxiliarClasses.*;
 import gui.AirportGUI;
@@ -55,6 +56,16 @@ public class ControlTower extends Agent {
 
     private ConcurrentHashMap<String, TransportVehicleAvailability> passenger_vehicles_availability;
 
+    public int getTransports_available_counter() {
+        return transports_available_counter;
+    }
+
+    public void increment_transport_counter() {transports_available_counter++;}
+
+    public void decrement_transport_counter() {transports_available_counter--;}
+
+    private int transports_available_counter;
+
     private Character[][] map;
     private Character[][] vehicleMap;
     private int currLine;
@@ -64,6 +75,7 @@ public class ControlTower extends Agent {
     public ControlTower() {
         this.passenger_vehicles = new Vector<>();
         this.passenger_vehicles_availability = new ConcurrentHashMap<>();
+        this.transports_available_counter = 0;
 
         map = new Character[11][20];
         for (Character[] row: map)
@@ -113,6 +125,7 @@ public class ControlTower extends Agent {
         //ENDTESTING
 
         addBehaviour(new ListeningTowerBehaviour(this));
+        addBehaviour(new LandingTicker(this, 500));
     }
 
     private void DFregistring() {
@@ -148,6 +161,7 @@ public class ControlTower extends Agent {
             for (DFAgentDescription vehicle : search_result) {
                 System.out.println(this.passenger_vehicles.add(vehicle.getName()));
                 this.passenger_vehicles_availability.put(vehicle.getName().getLocalName(), TransportVehicleAvailability.FREE);
+                increment_transport_counter();
             }
 
         } catch (FIPAException fe) {
@@ -214,6 +228,7 @@ public class ControlTower extends Agent {
                             if (!ct.getPassenger_vehicles().contains(new_agent)) {
                                 ct.getPassenger_vehicles().add(new_agent);
                                 ct.getPassenger_vehicles_availability().put(new_agent.getLocalName(), TransportVehicleAvailability.FREE);
+                                increment_transport_counter();
                                 System.out.println("New passenger vehicle on duty: " + new_agent.getLocalName());
                             }
                         }
@@ -309,7 +324,9 @@ public class ControlTower extends Agent {
         }
 
         // Creating a transport task (if returns false, call method again)
-        transmitNewTransportTask(airplane);
+        boolean found = false;
+        while(!found)
+            found = transmitNewTransportTask(airplane);
 
         airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()) );
     }
@@ -320,7 +337,7 @@ public class ControlTower extends Agent {
 
     // Returns true if the message was sent to a free guy, false other wise
     // If it was not sent, it must be repeated until ir gets it
-    private boolean transmitNewTransportTask(AirplaneInfo info) {
+    public boolean transmitNewTransportTask(AirplaneInfo info) {
         TransportTask task = new TransportTask(info.getLocalName(), info.getPassengers(), 30);
 
         ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
