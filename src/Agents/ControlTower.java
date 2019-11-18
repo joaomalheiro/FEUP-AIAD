@@ -155,20 +155,24 @@ public class ControlTower extends Agent {
         }
     }
 
-    public void initializePassengerGUI() {
-        Iterator iterator = this.passenger_vehicles.iterator();
+    public void setAvaiability() {
         int i = 0, j = 0;
-        System.out.println(this.passenger_vehicles.size());
-        while (iterator.hasNext()) {
-            System.out.println("" + i + " j- " + j);
-            if(i > 8) {
+
+        for (TransportVehicleAvailability value : passenger_vehicles_availability.values()) {
+            if (i > 8) {
                 i = 0;
                 j++;
             }
 
-            this.vehicleMap[j][i] = 'A';
+
+            if (value == TransportVehicleAvailability.BUSY) {
+                this.vehicleMap[j][i] = '7';
+            } else if (value == TransportVehicleAvailability.WAITING_REPLY) {
+                this.vehicleMap[j][i] = '4';
+            } else if (value == TransportVehicleAvailability.FREE) {
+                this.vehicleMap[j][i] = '0';
+            }
             i = i + 2;
-            iterator.next();
         }
 
         gui.getVehiclePanel().repaint();
@@ -225,7 +229,7 @@ public class ControlTower extends Agent {
 
     public void pushAirplane(AirplaneInfo airplane) {
         int y= -1;
-        initializePassengerGUI();
+        setAvaiability();
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 y = value.getY();

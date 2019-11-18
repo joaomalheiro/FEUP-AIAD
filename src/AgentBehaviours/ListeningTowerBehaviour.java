@@ -52,8 +52,6 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
            reply.setContent(Integer.toString(controlTower.getAirplanes().size()));
            controlTower.send(reply);
         }
-
-
     }
 
 
@@ -98,6 +96,8 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
             }
         }
+
+        controlTower.setAvaiability();
     }
 }
 
