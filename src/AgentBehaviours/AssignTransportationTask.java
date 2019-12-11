@@ -8,54 +8,46 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class AssignTransportationTask extends OneShotBehaviour {
+public class AssignTransportationTask extends TickerBehaviour {
 
     private int max_value;
     private int counter = 0;
-    private AirplaneInfo info;
+    private TransportTask task;
 
-    public AssignTransportationTask(Agent a, AirplaneInfo info, int max_value) {
-        super(a);
-        this.info = info;
+    public AssignTransportationTask(Agent a, TransportTask task, int max_value) {
+        super(a, 500);
         this.max_value = max_value;
+        this.task = task;
     }
 
     @Override
-    public void action() {
+    public void onTick() {
+        counter++;
+        System.out.println("Attempt to assign the task no. " + counter + " airplane " + task.getAirplane_name());
 
-        while(!assignNewTransportTask(info) && counter <= max_value){
-            counter++;
-            System.out.println("FAILURE: No transports available, repeating");
+        if(assignNewTransportTask()){
+            System.out.println("AssignTransportationTask: Found a FREE transport");
+            stop();
         }
-
-
     }
 
-    private boolean assignNewTransportTask(AirplaneInfo info) {
+    private boolean assignNewTransportTask() {
 
         // TODO
         // Have a drive distance list
         System.out.println("CONTROLTOWER: Assigning new passenger transportation task");
-        TransportTask task = new TransportTask(info.getLocalName(), info.getPassengers(), 30);
-
-        // GUIDE
-        // - Create new task
-        // - Create ACLMessage
-        // - Gather all vehicles that need to be contacted
-        // - Contact all vehicles
-        // - Handle the answers
-        // - Handling is now choosing the first one to answer
 
         ACLMessage msg = new ACLMessage(ACLMessage.PROPOSE);
         msg.setSender(myAgent.getAID());
         msg.addUserDefinedParameter("AGENT_TYPE", "CONTROLTOWER");
         try {
-            msg.setContentObject(task);
+            msg.setContentObject(this.task);
         } catch (IOException e) {
             e.printStackTrace();
         }

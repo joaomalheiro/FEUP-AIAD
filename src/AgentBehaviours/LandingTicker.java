@@ -20,7 +20,10 @@ public class LandingTicker extends TickerBehaviour {
     @Override
     protected void onTick() {
         int tmp = 0;
+
+        System.out.println("LANDINGTICKER: counters -> " + ct.getTransports_available_counter() + " | " + tmp);
         while (ct.getTransports_available_counter() - tmp > 0 && !ct.getAirplanes().isEmpty() && ct.getAirplanes().first().getTimeToTower() == 0) {
+            System.out.println("LANDINGTICKER: Airplane " + ct.getAirplanes().first().getLocalName());
             ct.landAirplane(ct.getAirplanes().first());
             tmp++;
         }

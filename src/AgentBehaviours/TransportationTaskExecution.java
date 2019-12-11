@@ -62,7 +62,7 @@ public class TransportationTaskExecution extends TickerBehaviour {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("PASSENGER_VEHICLE: Informing Control Tower of task end");
+        System.out.println(myAgent.getLocalName() + ": Informing Control Tower of task end");
         myAgent.send(msg);
     }
 }

@@ -49,7 +49,7 @@ public class JadeServiceLaucher {
 			mainContainer.acceptNewAgent("ControlTower", controlTower).start();
 
 			for(int i = 0; i < 3; i++){
-				PassengerVehicle pv = new PassengerVehicle(20 + i, 40, 10);
+				PassengerVehicle pv = new PassengerVehicle(20 + i, 30, 10);
 				agentContainer.acceptNewAgent("Vehicle" + (i+1), pv).start();
 			}
 

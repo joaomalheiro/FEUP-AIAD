@@ -56,13 +56,15 @@ public class ControlTower extends Agent {
 
     private ConcurrentHashMap<String, TransportVehicleAvailability> passenger_vehicles_availability;
 
+    private ConcurrentHashMap<Integer, TransportTask> unfulfilled_transportation_tasks;
+    private ConcurrentHashMap<Integer, TransportTask> onExecution_transportation_tasks;
+
     public int getTransports_available_counter() {
         return transports_available_counter;
     }
 
     public void increment_transport_counter() {
         transports_available_counter++;
-
     }
 
     public void decrement_transport_counter() {
@@ -125,7 +127,7 @@ public class ControlTower extends Agent {
         initialPassengerVehicleSearch();
         subscribePassengerVehicleAgent();
 
-        //addBehaviour(new PrintDF(this, 5000));
+        //addBehaviour(new PrintDF(this, 1000));
 
         addBehaviour(new ListeningTowerBehaviour(this));
         addBehaviour(new LandingTicker(this, 500));
@@ -334,9 +336,17 @@ public class ControlTower extends Agent {
         }
 
         // Creating a transport task
-       addBehaviour(new AssignTransportationTask(this, airplane, -1));
+        System.out.println("CONTROLTOWER: Adding behaviour for new airplane " + airplane.getLocalName());
+        addBehaviour(new AssignTransportationTask(this, new TransportTask(airplane.getLocalName(), airplane.getPassengers(), 30), -1));
 
         airplanes.removeIf(a1 -> a1.getLocalName().equals(airplane.getLocalName()));
+    }
+
+    public void checkTaskFulfillment(TransportTask task) {
+        if (!task.isTaskSatisfied()) {
+            addBehaviour(new AssignTransportationTask(this, task, -1));
+            System.out.println("Task not satisfied, searching more buses - " + task.getAirplane_name());
+        }
     }
 
     public void setPriority(String companyName, int priority) {
@@ -379,7 +389,7 @@ public class ControlTower extends Agent {
         for (Map.Entry<String, TransportVehicleAvailability> vehicle : passenger_vehicles_availability.entrySet()) {
             String k = vehicle.getKey();
             TransportVehicleAvailability v = vehicle.getValue();
-            //System.out.println("Availability: " + k + "  |  " + v);
+            System.out.println("Availability: " + k + "  |  " + v);
         }
     }
 

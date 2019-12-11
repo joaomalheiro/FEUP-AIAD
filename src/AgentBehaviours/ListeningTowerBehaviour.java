@@ -10,7 +10,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
     private ControlTower controlTower;
 
-    public ListeningTowerBehaviour(ControlTower controlTower){
+    public ListeningTowerBehaviour(ControlTower controlTower) {
         this.controlTower = controlTower;
     }
 
@@ -19,7 +19,7 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
         if (msg != null && !msg.getContent().equals("Got your message!")) {
             Object tmp = msg.getAllUserDefinedParameters().get("AGENT_TYPE");
-            if(tmp != null) {
+            if (tmp != null) {
                 switch (tmp.toString()) {
                     case "PASSENGER_VEHICLE":
                         passengerVehicleMessage(msg);
@@ -40,15 +40,15 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
     }
 
     private void companyMessage(ACLMessage msg) {
-        if(msg.getContent().contains("Priority:")){
+        if (msg.getContent().contains("Priority:")) {
             String[] args = msg.getContent().split("Priority:");
-            controlTower.setPriority(args[0],Integer.parseInt(args[1]));
+            controlTower.setPriority(args[0], Integer.parseInt(args[1]));
         } else {
-           ACLMessage reply =  msg.createReply();
-           reply.setPerformative(ACLMessage.INFORM);
-           reply.addUserDefinedParameter("AGENT_TYPE", AgentType.CONTROLTOWER.toString());
-           reply.setContent(Integer.toString(controlTower.getAirplanes().size()));
-           controlTower.send(reply);
+            ACLMessage reply = msg.createReply();
+            reply.setPerformative(ACLMessage.INFORM);
+            reply.addUserDefinedParameter("AGENT_TYPE", AgentType.CONTROLTOWER.toString());
+            reply.setContent(Integer.toString(controlTower.getAirplanes().size()));
+            controlTower.send(reply);
         }
     }
 
@@ -68,12 +68,11 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
         if (msg != null && !msg.getContent().equals("Got your message!")) {
 
-            if(msg.getPerformative() == ACLMessage.INFORM) {
+            if (msg.getPerformative() == ACLMessage.INFORM) {
                 System.out.println("CONTROLTOWER: Received INFORM from " + msg.getSender().getLocalName());
                 controlTower.getPassenger_vehicles_availability().put(msg.getSender().getLocalName(), TransportVehicleAvailability.FREE);
                 controlTower.increment_transport_counter();
-            }
-            else if(msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
+            } else if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL) {
                 System.out.println("CONTROLTOWER: Received ACCEPT_PROPOSAL from " + msg.getSender().getLocalName());
 
                 ACLMessage reply = msg.createReply();
@@ -86,10 +85,12 @@ public class ListeningTowerBehaviour extends CyclicBehaviour {
 
                 try {
                     TransportTask task = (TransportTask) msg.getContentObject();
-                    for(Pair<String, Integer> vehicle : task.getAssigned_passenger_vehicles()){
-                        controlTower.getPassenger_vehicles_availability().put(vehicle.getL(), TransportVehicleAvailability.BUSY);
-                        controlTower.decrement_transport_counter();
-                    }
+
+                    Pair<String, Integer> vehicle = task.getAssigned_passenger_vehicles().lastElement();
+                    controlTower.getPassenger_vehicles_availability().put(vehicle.getL(), TransportVehicleAvailability.BUSY);
+                    controlTower.decrement_transport_counter();
+                    
+                    controlTower.checkTaskFulfillment(task);
 
                 } catch (UnreadableException e) {
                     e.printStackTrace();

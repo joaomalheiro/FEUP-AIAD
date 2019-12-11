@@ -59,6 +59,17 @@ public class TransportTask implements Serializable {
         assigned_passenger_vehicles.add(new Pair<>(vehicle_id, capacity));
     }
 
+    public boolean isTaskSatisfied() {
+        int transports_capacity = 0;
+
+        for (Pair<String, Integer> trans : this.assigned_passenger_vehicles) {
+            transports_capacity += trans.getR();
+        }
+
+        System.out.println(this.passenger_number + " ===== " + transports_capacity);
+        return this.passenger_number <= transports_capacity;
+    }
+
     @Override
     public String toString() {
         return "TASK FOR: " + airplane_name + " with " + passenger_number + " passengers, at " + drive_distance + "m drive distance.";

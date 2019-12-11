@@ -22,7 +22,7 @@ public class ListeningPassVehicleBehaviour extends CyclicBehaviour {
 
         if (msg != null && !msg.getContent().equals("Got your message!")) {
             Object tmp = msg.getAllUserDefinedParameters().get("AGENT_TYPE");
-            if(tmp != null) {
+            if (tmp != null) {
                 switch (tmp.toString()) {
                     case "CONTROLTOWER":
                         controlTowerMessage(msg);
@@ -38,11 +38,10 @@ public class ListeningPassVehicleBehaviour extends CyclicBehaviour {
 
     private void controlTowerMessage(ACLMessage msg) {
 
-        if (msg.getPerformative() == ACLMessage.CONFIRM){
+        if (msg.getPerformative() == ACLMessage.CONFIRM) {
             System.out.println(myAgent.getLocalName() + ": received CONFIRM message");
             ((PassengerVehicle) myAgent).setConfirmed_task(true);
-        }
-        else if(((PassengerVehicle) myAgent).getTask() != null) {
+        } else if (((PassengerVehicle) myAgent).getTask() != null) {
             ACLMessage reply = msg.createReply();
             reply.clearUserDefinedParameter("AGENT_TYPE");
             reply.addUserDefinedParameter("AGENT_TYPE", AgentType.PASSENGER_VEHICLE.toString());
@@ -52,8 +51,7 @@ public class ListeningPassVehicleBehaviour extends CyclicBehaviour {
             System.out.println(myAgent.getLocalName() + ": already BUSY");
 
             myAgent.send(reply);
-        }
-        else if(msg.getPerformative() == ACLMessage.PROPOSE) {
+        } else if (msg.getPerformative() == ACLMessage.PROPOSE) {
             TransportTask task_proposed;
 
             try {
@@ -61,21 +59,14 @@ public class ListeningPassVehicleBehaviour extends CyclicBehaviour {
                 ACLMessage reply = msg.createReply();
                 reply.addUserDefinedParameter("AGENT_TYPE", AgentType.PASSENGER_VEHICLE.toString());
 
-                if(task_proposed.getPassenger_number() <= ((PassengerVehicle) myAgent).getCapacity()) {
-                    reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                    task_proposed.addVehicleToTask(myAgent.getLocalName(), ((PassengerVehicle) myAgent).getCapacity());
-                    ((PassengerVehicle) myAgent).setCurrent_task(task_proposed);
-                    reply.setContentObject(task_proposed);
-                    System.out.println(myAgent.getLocalName() + ": Accepting Task for " + task_proposed.getAirplane_name());
-                }
-                else {
-                    reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
-                    reply.setContent("Cannot fullfil task");
-                    // DEBUG
-                    System.out.println(myAgent.getLocalName() + ": Rejected Task for " + task_proposed.getAirplane_name());
-                }
+                reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                task_proposed.addVehicleToTask(myAgent.getLocalName(), ((PassengerVehicle) myAgent).getCapacity());
+                ((PassengerVehicle) myAgent).setCurrent_task(task_proposed);
+                reply.setContentObject(task_proposed);
+                System.out.println(myAgent.getLocalName() + ": Accepting Task for " + task_proposed.getAirplane_name());
+
                 myAgent.send(reply);
-                } catch (UnreadableException | IOException e) {
+            } catch (UnreadableException | IOException e) {
                 e.printStackTrace();
             }
         }
