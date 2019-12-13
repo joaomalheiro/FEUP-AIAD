@@ -58,6 +58,11 @@ public class ListeningCompanyBehaviour extends CyclicBehaviour {
 
     private void airplaneMessage(ACLMessage msg) {
         String[] args = msg.getContent().split("Value:");
+        System.out.println();
+        System.out.println();
+        System.out.println(msg.getContent());
+        System.out.println();
+        System.out.println();
         AirplaneInfo airplane = new AirplaneInfo(args[0]);
         company.landAirplane(airplane,Integer.parseInt(args[1]),airplane.getTimeWaiting());
         ACLMessage reply = msg.createReply();

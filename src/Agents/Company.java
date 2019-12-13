@@ -41,20 +41,21 @@ public class Company extends Agent {
 
     public void changeFunds(int amount){
         funds += amount;
-        // System.out.println("Company: " + this.getLocalName() + " Funds: " + funds);
+        System.out.println("Company: " + this.getLocalName() + " Funds: " + funds);
     }
 
     public void landAirplane(AirplaneInfo airplane,int valuePerPassenger,int timeWaited) {
-       int airplaneProfit = airplane.getPassengers() * valuePerPassenger - airplane.getTimeWaiting() * airplane.getPassengers();
+       int airplaneProfit = (airplane.getPassengers() * valuePerPassenger) - (airplane.getTimeWaiting() * airplane.getPassengers());
        changeFunds(airplaneProfit);
        airplanes.removeIf(ap -> ap.getId() == airplane.getId());
 
        if(strategy.equals(CompanyPriorityStrategy.Strategy.SMART)){
+
            int currentPriority = (valuePerPassenger - 10) * -1;
            if(timeWaited == 0 && currentPriority > 0){
                sendMessagePriority(currentPriority--);
-           } else if(timeWaited > 0 && currentPriority < 5) {
-               sendMessagePriority(currentPriority++);
+           } else if(timeWaited > 0 && currentPriority < 4) {
+               sendMessagePriority(currentPriority + 2);
            }
        }
     }
