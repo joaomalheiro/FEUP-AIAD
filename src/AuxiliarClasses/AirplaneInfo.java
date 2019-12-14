@@ -13,6 +13,12 @@ public class AirplaneInfo {
     private int capacity;
     private int passengers;
     private int timeToTower;
+    public int planesAtTime;
+
+    public void setTimeWaiting(int timeWaiting) {
+        this.timeWaiting = timeWaiting;
+    }
+
     private int timeWaiting = 0;
     private String localName;
     private int x;

@@ -17,6 +17,7 @@ import jade.lang.acl.ACLMessage;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.MessageTemplate;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,11 +46,13 @@ public class ControlTower extends Agent {
         }
     };
 
+    public Map<String, ArrayList<AirplaneInfo>> planesCsv = new HashMap<>();
+
     public TreeSet<AirplaneInfo> getAirplanes() {
         return airplanes;
     }
 
-    private TreeSet<AirplaneInfo> airplanes = new TreeSet<>(airplaneComparator);
+    public TreeSet<AirplaneInfo> airplanes = new TreeSet<>(airplaneComparator);
     private Map<String, Integer> companyPriorities = new HashMap<>();
 
     private Vector<AID> passenger_vehicles;
@@ -246,6 +249,13 @@ public class ControlTower extends Agent {
     }
 
     public void pushAirplane(AirplaneInfo airplane) {
+        airplane.planesAtTime = airplanes.size();
+        if(planesCsv.containsKey(airplane.getLocalName())){
+            planesCsv.get(airplane.getLocalName()).add(airplane);
+        } else {
+            planesCsv.put(airplane.getLocalName(),new ArrayList<AirplaneInfo>());
+            planesCsv.get(airplane.getLocalName()).add(airplane);
+        }
         int y = -1;
         setAvailability();
         for (AirplaneInfo value : airplanes) {
@@ -328,6 +338,7 @@ public class ControlTower extends Agent {
     public void landAirplane(AirplaneInfo airplane) {
         addBehaviour(new AirplaneLanded(airplane, 10 - companyPriorities.get(airplane.getLocalName().replaceAll("\\d", ""))));
 
+        csvPlaneLand(airplane);
         for (AirplaneInfo value : airplanes) {
             if (value.getLocalName().equals(airplane.getLocalName())) {
                 map[value.getX()][value.getY()] = '*';
@@ -347,6 +358,43 @@ public class ControlTower extends Agent {
             addBehaviour(new AssignTransportationTask(this, task, -1));
             System.out.println("Task not satisfied, searching more buses - " + task.getAirplane_name());
         }
+    }
+
+    private void csvPlaneLand(AirplaneInfo airplane) {
+        for(int i = 0;i < planesCsv.get(airplane.getLocalName()).size();i++){
+            planesCsv.get(airplane.getLocalName()).get(i).setTimeWaiting(airplane.getTimeWaiting());
+            AirplaneInfo a = planesCsv.get(airplane.getLocalName()).get(i);
+            try (FileWriter pw = new FileWriter("Information.csv",true);) {
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(a.getLocalName());
+                sb.append(',');
+                sb.append(a.getFuel());
+                sb.append(',');
+                sb.append(a.getPassengers());
+                sb.append(',');
+                sb.append(a.planesAtTime);
+                sb.append(',');
+                sb.append(companyPriorities.get(a.getLocalName().replaceAll("\\d", "")));
+                sb.append(',');
+                sb.append(a.getTimeToTower());
+                sb.append(',');
+                sb.append(a.getTimeWaiting());
+
+                sb.append('\n');
+
+                pw.write(sb.toString());
+
+                System.out.println("Csv Created!");
+
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     public void setPriority(String companyName, int priority) {

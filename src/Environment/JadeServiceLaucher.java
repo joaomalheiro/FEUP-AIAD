@@ -11,6 +11,10 @@ import jade.core.Runtime;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 public class JadeServiceLaucher {
 
 	public static final boolean SEPARATE_CONTAINERS = false;
@@ -34,6 +38,31 @@ public class JadeServiceLaucher {
 
 		ControlTower ct = launchAgents(scenario);
 		launchGUI(ct);
+		/*try (PrintWriter writer = new PrintWriter(new File("Information.csv"))) {
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("id");
+			sb.append(',');
+			sb.append("fuel");
+			sb.append(',');
+			sb.append("passengers");
+			sb.append(',');
+			sb.append("planesAtThatTime");
+			sb.append(',');
+			sb.append("priority");
+			sb.append(',');
+			sb.append("timeToArrive");
+			sb.append(',');
+			sb.append("timeWaited");
+			sb.append('\n');
+
+			writer.write(sb.toString());
+
+			System.out.println("Csv Created!");
+
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}*/
 	}
 	
 	protected void launchGUI(ControlTower ct) {
@@ -63,6 +92,12 @@ public class JadeServiceLaucher {
 					agentContainer.acceptNewAgent("Luftansa" , cp3).start();
 					break;
 				case 2:
+					Company cp27 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
+					agentContainer.acceptNewAgent("AirAsia" , cp27).start();
+					Company cp28 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
+					agentContainer.acceptNewAgent("QatarAirways" , cp28).start();
+					Company cp29 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
+					agentContainer.acceptNewAgent("SingapureAirlines" , cp29).start();
                     Company cp21 = new Company(1000, CompanyPriorityStrategy.Strategy.RANDOM);
                     agentContainer.acceptNewAgent("Ryanair" , cp21).start();
                     Company cp22 = new Company(1000, CompanyPriorityStrategy.Strategy.RANDOM);
@@ -75,12 +110,7 @@ public class JadeServiceLaucher {
                     agentContainer.acceptNewAgent("AmericanAirlines" , cp25).start();
                     Company cp26 = new Company(1000, CompanyPriorityStrategy.Strategy.MEDIUM);
                     agentContainer.acceptNewAgent("Emirates" , cp26).start();
-                    Company cp27 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
-                    agentContainer.acceptNewAgent("AirAsia" , cp27).start();
-                    Company cp28 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
-                    agentContainer.acceptNewAgent("QatarAirways" , cp28).start();
-                    Company cp29 = new Company(1000, CompanyPriorityStrategy.Strategy.SMART);
-                    agentContainer.acceptNewAgent("SingapureAirlines" , cp29).start();
+
 					break;
 				case 3:
 					break;

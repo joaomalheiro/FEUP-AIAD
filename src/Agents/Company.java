@@ -5,12 +5,12 @@ import AgentBehaviours.CompanyPriorityStrategy;
 import AgentBehaviours.ListeningCompanyBehaviour;
 import AuxiliarClasses.AgentType;
 import AuxiliarClasses.AirplaneInfo;
+import AuxiliarClasses.Pair;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Company extends Agent {
     private int funds;
